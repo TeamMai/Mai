@@ -1,0 +1,53 @@
+default_stages: [commit, push]
+default_language_version:
+  python: python3.10
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.1.0
+    hooks:
+    -   id: check-executables-have-shebangs
+    -   id: check-ast
+    -   id: debug-statements
+    -   id: trailing-whitespace
+    -   id: mixed-line-ending
+    -   id: check-yaml
+    -   id: end-of-file-fixer
+    -   id: check-json
+    -   id: check-case-conflict
+    -   id: check-added-large-files
+    -   id: detect-private-key
+    -   id: check-merge-conflict
+
+  - repo: https://github.com/psf/black
+    rev: 22.3.0
+    hooks:
+    - id: black
+      args: [
+        --line-length=80,
+        --target-version=py39
+      ]
+      exclude: ^(venv/|docs/)
+      types: ['python']
+
+  - repo: https://github.com/asottile/blacken-docs
+    rev: v1.12.1
+    hooks:
+    -   id: blacken-docs
+        additional_dependencies: [black==22.3.0]
+
+  -  repo: https://github.com/asottile/pyupgrade
+     rev: v2.31.1
+     hooks:
+      - id: pyupgrade
+
+  - repo: https://github.com/pre-commit/pygrep-hooks
+    rev: v1.9.0
+    hooks:
+    -   id: python-no-eval
+
+
+  - repo: https://github.com/pycqa/isort
+    rev: 5.10.1
+    hooks:
+      - id: isort
+        name: isort (python)

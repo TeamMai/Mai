@@ -1,0 +1,19 @@
+# Project Related
+migrations/
+site/
+docs_build
+cogs/NSFW/cahce/NSFW.pickle
+
+*.md
+
+# Docker
+Dockerfile
+
+# Github
+.git
+.git
+.gitattributes
+.gitignore
+
+# Python
+__pycache__

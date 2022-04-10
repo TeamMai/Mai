@@ -1,0 +1,20 @@
+# Cache
+__pycache__
+cogs/NSFW/cache
+.cache
+
+# Database
+migrations/
+pyproject.toml
+
+# Config
+config/config.yaml
+.markdownlint.json
+
+# VS Code
+.vscode/settings.json
+
+# Documentation
+docs/site
+docs_build
+site

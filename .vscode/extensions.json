@@ -1,0 +1,23 @@
+{
+	"recommendations": [
+		"vtrois.gitmoji-vscode",
+        "magicstack.magicpython",
+        "shd101wyy.markdown-preview-enhanced",
+        "davidanson.vscode-markdownlint",
+        "yzhang.markdown-all-in-one",
+        "ms-python.vscode-pylance",
+        "ms-python.python",
+        "visualstudioexptteam.vscodeintellicode",
+        "njpwerner.autodocstring",
+        "redhat.vscode-yaml",
+        "aaron-bond.better-comments",
+        "kisstkondoros.vscode-gutter-preview",
+        "editorconfig.editorconfig",
+        "github.vscode-pull-request-github",
+        "gruntfuggly.todo-tree",
+        "visualstudioexptteam.intellicode-api-usage-examples",
+        "tushortz.python-extended-snippets",
+        "twixes.pypi-assistant",
+        "njqdev.vscode-python-typehint"
+	]
+}
