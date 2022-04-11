@@ -147,7 +147,7 @@ typing-utils==0.1.0; python_full_version >= "3.6.1"
 update-checker==0.18.0
 urllib3==1.26.9; python_version >= "3.7" and python_full_version < "3.0.0" and python_version < "4.0" or python_full_version >= "3.6.0" and python_version < "4" and python_version >= "3.7"
 valorant.py @ git+https://github.com/frissyn/valorant.py@master
-virtualenv==20.14.0; python_full_version >= "3.6.1"
+virtualenv==20.14.1; python_full_version >= "3.6.1"
 watchdog==2.1.7; python_version >= "3.6"
 watchgod==0.8.2; python_version >= "3.5"
 wcwidth==0.2.5; python_version >= "3.7" and python_version < "4.0" and python_full_version >= "3.6.2"
