@@ -54,7 +54,7 @@ hyperframe==6.0.1; python_version >= "3.6" and python_full_version >= "3.6.1"
 identify==2.4.12; python_full_version >= "3.6.1"
 idna==3.3; python_version >= "3.7" and python_version < "4.0" and python_full_version >= "3.6.2"
 import-expression==1.1.4; python_full_version >= "3.8.0"
-importlib-metadata==4.11.3; python_version >= "3.7"
+importlib-metadata==4.11.4; python_version >= "3.7"
 inquirerpy==0.3.3; python_version >= "3.7" and python_version < "4.0"
 jeepney==0.8.0; sys_platform == "linux" and python_version >= "3.7"
 jeyyapi @ git+https://github.com/JeyyGit/jeyyapi.git@main
