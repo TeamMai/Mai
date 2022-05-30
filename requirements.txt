@@ -15,7 +15,7 @@ asyncpg==0.25.0; python_version >= "3.7" and python_version < "4.0" and python_f
 asyncpraw==7.5.0; python_version >= "3.6"
 asyncprawcore==2.3.0; python_version >= "3.6"
 attrs==21.4.0; python_version >= "3.7" and python_full_version < "3.0.0" and python_version < "4.0" or python_full_version >= "3.5.0" and python_version >= "3.7" and python_version < "4.0"
-augmentor==0.2.9
+augmentor==0.2.10
 backoff==1.11.1; python_version >= "3.6" and python_full_version < "3.0.0" and python_version < "4.0" or python_version >= "3.6" and python_version < "4.0" and python_full_version >= "3.5.0"
 backports.entry-points-selectable==1.1.1; python_version >= "2.7" and python_full_version >= "3.6.1"
 beautifulsoup4==4.11.1; python_full_version > "3.0.0"
