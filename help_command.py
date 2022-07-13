@@ -93,9 +93,9 @@ class MaiHelpCommand(commands.HelpCommand):
             inline=False,
         )
 
-        examples = f"`{command.brief}`"
+        examples = command.extras["Examples"]
 
-        if command.brief:
+        if examples:
             has_examples = True
         else:
             has_examples = False
@@ -106,21 +106,21 @@ class MaiHelpCommand(commands.HelpCommand):
             has_notes = False
 
         if has_examples:
-            embed.add_field(name="Examples", value=examples, inline=False)
+            embed.add_field(name="Examples", value=f"`{examples}`", inline=False)
 
         if has_notes:
             embed.add_field(name="Extra Notes", value=command.extras["Notes"])
 
-        if command._buckets._cooldown is None:
-            embed.add_field(
-                name="Cooldown", value=f"`0` (No Cooldown)", inline=False
-            )
-        else:
+        has_cooldown = command._buckets._cooldown is not None
+
+        if has_cooldown:
             delta = datetime.timedelta(seconds=command._buckets._cooldown.per)
             cooldown = humanize.precisedelta(delta, format="%0.0f")
             embed.add_field(
                 name="Cooldown", value=f"`{cooldown}`", inline=False
             )
+        else:
+            embed.add_field(name="Cooldown", value=f"`0` (No Cooldown)", inline=False)
 
         await self.dispatch_help(embed)
 

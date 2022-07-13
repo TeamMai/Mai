@@ -49,7 +49,7 @@ class ChangeLogs(
     @changelog.command(
         name="toggle",
         description="Toggle ChangeLogs on/off",
-        brief="changelog toggle on\nchangelog toggle off\nchangelog toggle True\nchangelog toggle False",
+        extras={"Examples": "changelog toggle on\nchangelog toggle off\nchangelog toggle True\nchangelog toggle False"},
     )
     @commands.has_guild_permissions(administrator=True)
     async def changelog_toggle(
@@ -85,7 +85,7 @@ class ChangeLogs(
     @changelog.command(
         name="channel",
         description="Set the channel used for posting changelogs",
-        brief="changelog channel 1234567\nchangelog channel #channel(mention)",
+        extras={"Examples": "changelog channel 1234567\nchangelog channel #channel(mention)"},
     )
     @commands.has_guild_permissions(administrator=True)
     async def changelog_channel(

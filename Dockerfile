@@ -8,4 +8,6 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
+RUN scripts/linux/build_database.sh
+
 ENTRYPOINT ["python3", "mai.py"]

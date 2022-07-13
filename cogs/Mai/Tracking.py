@@ -57,7 +57,7 @@ class Tracking(
     @tracking.command(
         name="toggle",
         description="Toggle Tracking on/off",
-        brief="tracking toggle on\ntracking toggle off\ntracking toggle True\ntracking toggle False",
+        extras={"Examples": "tracking toggle on\ntracking toggle off\ntracking toggle True\ntracking toggle False"},
     )
     async def tracking_toggle(
         self, ctx: commands.Context, toggle: Union[str, bool]
@@ -92,7 +92,7 @@ class Tracking(
     @tracking.command(
         name="view",
         description="View how many commands you've run",
-        brief="tracking view\ntracking view @Member",
+        extras={"Examples": "tracking view\ntracking view @Member"},
     )
     async def tracking_view(
         self, ctx: commands.Context, member: Optional[discord.Member]

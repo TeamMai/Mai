@@ -59,7 +59,7 @@ class Miscellaneous(
         )
 
     @commands.command(
-        name="invite", description="Get An Invite To The Bot", brief="invite"
+        name="invite", description="Get An Invite To The Bot", extras={"Examples": "invite"}
     )
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.guild_only()
@@ -71,7 +71,7 @@ class Miscellaneous(
     @commands.command(
         name="support",
         description="Get An Invite To The Bot Support Server",
-        brief="invite",
+        extras={"Examples": "invite"},
     )
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.guild_only()
@@ -82,14 +82,14 @@ class Miscellaneous(
         name="source",
         aliases=["src"],
         description="Get An Link To The Bot's Source Code",
-        brief="source",
+        extras={"Examples": "source"},
     )
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.guild_only()
     async def source(self, ctx: commands.Context) -> None:
         await ctx.send("Here is your link", view=Source())
 
-    @commands.command(name="ping", description="pong", brief="ping")
+    @commands.command(name="ping", description="pong", extras={"Examples": "ping"})
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.guild_only()
     async def ping(self, ctx: commands.Context) -> None:
@@ -130,13 +130,13 @@ class Miscellaneous(
 
         pEmbed.set_thumbnail(url=Links.BOT_AVATAR_URL)
         pEmbed.set_footer(
-            text="Developer: Ghoul#6066", icon_url=Links.BOT_AVATAR_URL
+            text=Mai.DEVELOPER_FOOTER, icon_url=Links.BOT_AVATAR_URL
         )
         await message.edit(content=None, embed=pEmbed)
         await message.add_reaction(Emoji.WHITE_CHECKMARK)
 
     @commands.command(
-        name="uptime", description="Get Mai's Uptime", brief="uptime"
+        name="uptime", description="Get Mai's Uptime", extras={"Examples": "uptime"}
     )
     @commands.cooldown(1, 2, commands.BucketType.user)
     @commands.guild_only()
@@ -164,7 +164,7 @@ class Miscellaneous(
         name="info",
         aliases=["stats"],
         description="Get bot stats",
-        brief="stats",
+        extras={"Examples": "stats"},
     )
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.guild_only()
@@ -182,12 +182,13 @@ class Miscellaneous(
 
         embed.set_thumbnail(url=Links.BOT_AVATAR_URL)
 
+        ghoul = ctx.guild.get_member(Mai.GHOUL_DISCORD_ID)
+        nerd = ctx.guild.get_member(Mai.NERD_DISCORD_ID)
+
         if ctx.guild.id == Mai.SUPPORT_SERVER_ID:
-            ghoul = ctx.guild.get_member(Mai.GHOUL_DISCORD_ID)
-            nerd = ctx.guild.get_member(Mai.NERD_DISCORD_ID)
             developers = f"Developers: {ghoul.mention}, {nerd.mention}"
         else:
-            developers = "Developers: `Ghoul#6066`, `Nerd#4271`"
+            developers = f"Developers: `{ghoul.name}`, `{nerd.name}`"
 
         embed.add_field(
             name=f"{Emoji.OWNER} Developers",
@@ -259,7 +260,7 @@ class Miscellaneous(
         )
 
         embed.set_footer(
-            text="Made With ❤️ By Ghoul & Nerd", icon_url=ctx.author.avatar.url
+            text=Mai.DEVELOPER_FOOTER, icon_url=ctx.author.avatar.url
         )
 
         await message.edit(content=None, embed=embed)
@@ -267,7 +268,7 @@ class Miscellaneous(
     @commands.command(
         name="math",
         description="Execute Math",
-        brief="math 1 + 1\nmath 3p p=43",
+        extras={"Examples": "math 1 + 1\nmath 3p p=43"},
     )
     @commands.guild_only()
     async def math(
@@ -316,7 +317,7 @@ class Miscellaneous(
         name="avatar",
         description="Get Avatar of a User",
         aliases=["av"],
-        brief="av",
+        extras={"Examples": "av"},
     )
     async def avatar(self, ctx: commands.Context, user: discord.Member = None):
         if not user:
@@ -337,7 +338,7 @@ class Miscellaneous(
     @commands.command(
         name="banner",
         description="Get Banner of User",
-        brief="banner @Member\nbanner",
+        extras={"Examples": "banner @Member\nbanner"},
     )
     async def banner(self, ctx: commands.Context, user: discord.Member = None):
         if not user:
@@ -380,7 +381,7 @@ class Miscellaneous(
     @commands.command(
         name="serverbanner",
         description="Get Server Banner",
-        brief="serverbanner",
+        extras={"Examples": "serverbanner"},
     )
     @commands.guild_only()
     async def serverbanner(self, ctx: commands.Context):
@@ -417,7 +418,7 @@ class Miscellaneous(
             await ctx.send(embed=embed)
 
     @commands.command(
-        name="servericon", description="Get Server Icon", brief="servericon"
+        name="servericon", description="Get Server Icon", extras={"Examples": "servericon"}
     )
     @commands.guild_only()
     async def servericon(self, ctx: commands.Context):
@@ -441,8 +442,7 @@ class Miscellaneous(
         name="screenshot",
         aliases=["ss"],
         description="Take A Screenshot Of An Website",
-        brief="screenshot https://google.com\nss https://google.com",
-        extras={"Notes": "**ONLY** `http://` and `https://` are supported."},
+        extras={"Notes": "**ONLY** `http://` and `https://` are supported.", "Examples": "screenshot https://google.com\nss https://google.com"},
     )
     @commands.guild_only()
     async def screenshot(

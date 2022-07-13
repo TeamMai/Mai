@@ -76,7 +76,6 @@ class CountingCog(
         name="stats",
         aliases=["info"],
         description="Get All Current Counting Stats",
-        brief="counting stats",
     )
     async def counting_stats(self, ctx: commands.Context) -> None:
 
@@ -116,7 +115,7 @@ class CountingCog(
     @counting.command(
         name="toggle",
         description="Toggle Counting On/Off",
-        brief="counting toggle True\ncounting toggle False",
+        extras={"Examples": "counting toggle True\ncounting toggle False"},
     )
     async def counting_toggle(
         self, ctx: commands.Context, toggle: Optional[bool]
@@ -153,7 +152,7 @@ class CountingCog(
     @counting.command(
         name="channel",
         description="Set The Channel Counting Will Happen In",
-        brief="counting channel #counting",
+        extras={"Examples": "counting channel #counting"},
     )
     async def counting_channel(
         self, ctx: commands.Context, channel: discord.TextChannel
@@ -197,7 +196,7 @@ class CountingCog(
     @counting.command(
         name="goal",
         description="Set A Goal For Counting",
-        brief="counting goal 5000",
+        extras={"Examples": "counting goal 5000"},
     )
     async def counting_goal(
         self, ctx: commands.Context, goal: int = None
@@ -231,7 +230,7 @@ class CountingCog(
     @counting.command(
         name="start",
         description="Start Counting From A Number",
-        brief="counting start 69\ncounting start 420",
+        extras={"Examples": "counting start 69\ncounting start 420"},
     )
     async def counting_start(self, ctx, counting_number: int = None) -> None:
 
@@ -259,7 +258,7 @@ class CountingCog(
             await ctx.send_help(self.counting_channel)
 
     @counting.command(
-        name="reset", description="Reset Counting Back To 0", brief="counting 0"
+        name="reset", description="Reset Counting Back To 0", extras={"Examples": "counting 0"}
     )
     async def counting_reset(self, ctx):
 
@@ -286,7 +285,7 @@ class CountingCog(
     @counting.command(
         name="warnmsg",
         description="Set The Message That Will Send When Someone Messes Up",
-        brief="counting warnmsg That Number Is Not Correct",
+        extras={"Examples": "counting warnmsg That Number Is Not Correct"},
     )
     async def counting_warnmsg(self, ctx, *, counting_warn_message: str):
         guild = await Guild.from_context(ctx)

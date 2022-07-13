@@ -39,7 +39,7 @@ class Report(
     @commands.command(
         name="report",
         description="Report A Bug, User, or Guild",
-        brief="report",
+        extras={"Examples": "report"},
     )
     async def report(
         self,

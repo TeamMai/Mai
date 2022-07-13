@@ -53,7 +53,7 @@ class Actions(
     @commands.command(
         name="poptart",
         description="Throws A Poptart At Random Members",
-        brief="poptart @Member1 @Member2",
+        extras={"Examples": "poptart @Member1 @Member2"},
     )
     @commands.guild_only()
     async def poptart(
@@ -78,7 +78,7 @@ class Actions(
         )
 
     @commands.command(
-        name="hug", description="Hug Someone Or Yourself", brief="hug @Member1"
+        name="hug", description="Hug Someone Or Yourself", extras={"Examples": "hug @Member1"}
     )
     @commands.guild_only()
     async def hug(
@@ -98,7 +98,7 @@ class Actions(
         await ctx.send(embed=embed)
 
     @commands.command(
-        name="pat", description="Pat Someone Or Yourself", brief="pat @Member1"
+        name="pat", description="Pat Someone Or Yourself", extras={"Examples": "pat @Member1"}
     )
     @commands.guild_only()
     async def pat(
@@ -120,7 +120,7 @@ class Actions(
     @commands.command(
         name="kill",
         description="Kill Someone Or Yourself",
-        brief="kill @Member1",
+        extras={"Examples": "kill @Member1"},
     )
     @commands.guild_only()
     async def kill(
@@ -142,7 +142,7 @@ class Actions(
     @commands.command(
         name="slap",
         description="Slap Someone Or Yourself",
-        brief="slap @Member1",
+        extras={"Examples": "slap @Member1"},
     )
     @commands.guild_only()
     async def slap(
@@ -164,7 +164,7 @@ class Actions(
     @commands.command(
         name="lick",
         description="Lick Someone Or Yourself",
-        brief="lick @Member1",
+        extras={"Examples": "lick @Member1"},
     )
     @commands.guild_only()
     async def lick(

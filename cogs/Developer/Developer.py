@@ -46,7 +46,7 @@ class Developer(
     @blacklist.command(
         name="add",
         description="Blacklist A Server From Using Mai",
-        brief="blacklist add 1234567\nblacklist add My Server Name",
+        extras={"Examples": "blacklist add 1234567\nblacklist add My Server Name"},
     )
     async def add(
         self,
@@ -89,7 +89,7 @@ class Developer(
     @blacklist.command(
         name="remove",
         description="Remove A Server Blacklist From Mai",
-        brief="blacklist remove 1234567\nblacklist remove My Server Name",
+        extras={"Examples": "blacklist remove 1234567\nblacklist remove My Server Name"},
     )
     async def remove(
         self, ctx: commands.Context, guild: Union[discord.Guild, int]

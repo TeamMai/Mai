@@ -52,7 +52,7 @@ class Anilist(
     @anilist.command(
         name="user",
         description="Get Information About A User",
-        brief="anilist user xGhoul",
+        extras={"Examples": "anilist user xGhoul"},
     )
     async def anilist_user(
         self, ctx: commands.Context, username: Optional[str]
@@ -63,7 +63,7 @@ class Anilist(
     @anilist.command(
         name="anime",
         description="Get Information About An Anime",
-        brief="anilist anime One Piece",
+        extras={"Examples": "anilist anime One Piece"},
     )
     async def anilist_anime(
         self, ctx: commands.Context, *, anime: Optional[str]
@@ -74,7 +74,7 @@ class Anilist(
     @anilist.command(
         name="manga",
         description="Get Information About An Manga",
-        brief="anilist manga Sun Ken Rock",
+        extras={"Examples": "anilist manga Sun Ken Rock"},
     )
     async def anilist_manga(
         self, ctx: commands.Context, *, manga: Optional[str]
@@ -85,7 +85,7 @@ class Anilist(
     @anilist.command(
         name="character",
         description="Get Information About An Character",
-        brief="anilist character Ken Kaneki",
+        extras={"Examples": "anilist character Ken Kaneki"},
     )
     async def anilist_character(
         self, ctx: commands.Context, *, character: Optional[str]

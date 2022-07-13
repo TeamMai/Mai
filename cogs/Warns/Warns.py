@@ -45,7 +45,7 @@ class Warn(
         invoke_without_command=True,
         name="warn",
         description="Warn Members",
-        brief="warn @Member misbehaving",
+        extras={"Examples": "warn @Member misbehaving"},
     )
     @commands.guild_only()
     @commands.has_permissions(manage_messages=True)
@@ -109,7 +109,7 @@ class Warn(
     @warn.command(
         name="clear",
         description="Clears A Warning Or All Warnings",
-        brief="warn clear @Member1 (Clears All Warnings)\nwarn clear e7dd76c1-fe47-4fb2-b8dd-1319e802c490 (Clears 1)",
+        extras={"Examples": "warn clear @Member1 (Clears All Warnings)\nwarn clear e7dd76c1-fe47-4fb2-b8dd-1319e802c490 (Clears 1)"},
     )
     @commands.has_permissions(manage_messages=True)
     async def clear_warns(
@@ -148,7 +148,7 @@ class Warn(
         name="list",
         aliases=["modlogs", "show", "logs"],
         description="Returns A List Of A Users Total Warns",
-        brief="warn list\nwarn list @Member",
+        extras={"Examples": "warn list\nwarn list @Member"},
     )
     @commands.has_permissions(manage_messages=True)
     async def warn_list(

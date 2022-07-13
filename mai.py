@@ -26,7 +26,6 @@ from glob import glob
 from typing import Tuple
 
 
-from discord import AllowedMentions, Intents
 from discord.ext import commands, tasks
 from discord.ext.commands import AutoShardedBot
 from discord.flags import MemberCacheFlags
@@ -39,7 +38,7 @@ from discord.errors import (
 )
 
 from pycord18n.extension import I18nExtension, _
-
+from jeyyapi import JeyyAPIClient
 
 from rich.traceback import install
 
@@ -108,6 +107,8 @@ class Mai(AutoShardedBot):
         self.documentation = Links.BOT_DOCUMENTATION_URL
         self.invite_url = Links.BOT_INVITE_URL
 
+        self.jeyyapi_client = JeyyAPIClient(session=self.session)
+
         # -- Tuple of all activities the bot will display as a status
         self.activities = itertools.cycle(
             (
@@ -140,14 +141,14 @@ class Mai(AutoShardedBot):
         # -- Initalizing parent class
 
         # -- Intents
-        intents = Intents.default()
+        intents = discord.Intents.default()
         intents.members = True
         intents.typing = False
         intents.presences = True
         intents.message_content = True
 
         chunk_guilds_at_startup = False
-        allowed_mentions = AllowedMentions(everyone=False, roles=False)
+        allowed_mentions = discord.mentions.AllowedMentions(everyone=False, roles=False)
         stuff_to_cache = MemberCacheFlags.from_intents(intents)
 
         super().__init__(

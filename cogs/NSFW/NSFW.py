@@ -103,32 +103,32 @@ class NSFW(
         else:
             traceback.print_exception(type(error), error, error.__traceback__)
 
-    @commands.command(name="ass", description="Ass Pictures", brief="ass")
+    @commands.command(name="ass", description="Ass Pictures", extras={"Examples": "ass"})
     @commands.guild_only()
     @commands.is_nsfw()
     async def ass(self, ctx: commands.Context) -> None:
         await self._reddit_sender(ctx, "ass", "DRUMS")
 
-    @commands.command(name="teen", description="Legal Teenagers", brief="teen")
+    @commands.command(name="teen", description="Legal Teenagers", extras={"Examples": "teen"})
     @commands.guild_only()
     @commands.is_nsfw()
     async def teen(self, ctx: commands.Context) -> None:
         await self._reddit_sender(ctx, "LegalTeens", "You like them young?")
 
-    @commands.command(name="boobs", description="Boob Pictures", brief="boobs")
+    @commands.command(name="boobs", description="Boob Pictures", extras={"Examples": "boobs"})
     @commands.guild_only()
     @commands.is_nsfw()
     async def boobs(self, ctx: commands.Context) -> None:
         await self._reddit_sender(ctx, "boobs", "Bounce! Bounce!")
 
-    @commands.command(name="pussy", description="Pussy Pictures", brief="pussy")
+    @commands.command(name="pussy", description="Pussy Pictures", extras={"Examples": "pussy"})
     @commands.guild_only()
     @commands.is_nsfw()
     async def pussy(self, ctx: commands.Context) -> None:
         await self._reddit_sender(ctx, "pussy", "Wet or Dry?")
 
     @commands.command(
-        name="cutesluts", description="Cute Pictures", brief="cutesluts"
+        name="cutesluts", description="Cute Pictures", extras={"Examples": "cutesluts"}
     )
     @commands.guild_only()
     @commands.is_nsfw()
@@ -137,7 +137,7 @@ class NSFW(
             ctx, "TooCuteForPorn", "Too cute for porn, aren't they?"
         )
 
-    @commands.command(name="nudes", description="nude pictures", brief="nudes")
+    @commands.command(name="nudes", description="nude pictures", extras={"Examples": "nudes"})
     @commands.guild_only()
     @commands.is_nsfw()
     async def nudes(self, ctx: commands.Context) -> None:
@@ -147,7 +147,7 @@ class NSFW(
         name="cum",
         aliases=["cumsluts"],
         description="Cumslut Pictures",
-        brief="cum",
+        extras={"Examples": "cum"},
     )
     @commands.guild_only()
     @commands.is_nsfw()
@@ -157,7 +157,7 @@ class NSFW(
         )
 
     @commands.command(
-        name="hentai", description="Hentai Pictures", brief="hentai"
+        name="hentai", description="Hentai Pictures", extras={"Examples": "hentai"}
     )
     @commands.guild_only()
     @commands.is_nsfw()
@@ -177,7 +177,7 @@ class NSFW(
     @nsfw.command(
         name="toggle",
         description="Toggle NSFW On/Off",
-        brief="nsfw toggle on\nnsfw toggle off\nnsfw toggle True\nnsfw toggle False",
+        extras={"Examples": "nsfw toggle on\nnsfw toggle off\nnsfw toggle True\nnsfw toggle False"},
     )
     async def nsfw_toggle(
         self, ctx: commands.Context, toggle: Union[bool, str]

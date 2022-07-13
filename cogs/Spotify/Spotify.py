@@ -16,8 +16,6 @@ import discord
 from typing import Optional
 from discord.ext import commands
 
-from jeyyapi import JeyyAPIClient
-
 from helpers.constants import *
 from helpers.logging import log
 
@@ -32,7 +30,6 @@ class Spotify(
 ):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.jeyyapi_client = JeyyAPIClient(session=self.bot.session)
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -43,7 +40,7 @@ class Spotify(
     @commands.command(
         name="spotify",
         description="Get An Image Of What You're Currently Listening Too On Spotify",
-        brief="spotify @Member\nspotify (Can Be Used Standalone)",
+        extras={"Examples": "spotify @Member\nspotify (Can Be Used Standalone)"},
     )
     async def spotify(
         self, ctx: commands.Context, member: Optional[discord.Member]
@@ -63,7 +60,7 @@ class Spotify(
                 )
                 return await ctx.send(embed=embed)
 
-            image = await self.jeyyapi_client.spotify_from_object(spotify)
+            image = await self.bot.jeyyapi_client.spotify_from_object(spotify)
 
             await ctx.send(
                 f"> **{member}** is listening to **{spotify.title}**",

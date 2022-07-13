@@ -60,7 +60,7 @@ class Server(
     @prefix.command(
         name="set",
         description="set the server prefix for mai",
-        brief="prefix set !\nprefix set $$",
+        extras={"Examples": "prefix set !\nprefix set $$"},
     )
     @commands.has_permissions(administrator=True)
     async def prefix_set(self, ctx: commands.Context, prefix: Optional[str]):
@@ -113,7 +113,7 @@ class Server(
     @prefix.command(
         name="reset",
         description="set the server prefix for mai",
-        brief="prefix reset",
+        extras={"Examples": "prefix reset"},
     )
     @commands.has_permissions(administrator=True)
     async def prefix_reset(self, ctx: commands.Context):

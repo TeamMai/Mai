@@ -92,7 +92,7 @@ class Emojis(
     @emote.command(
         name="add",
         description="Add Multiple Emojis To A Server",
-        brief="add :emoji1: :emoji2: :emoji3:",
+        extras={"Examples": "add :emoji1: :emoji2: :emoji3:"},
     )
     async def add_emoji(
         self,
@@ -158,7 +158,7 @@ class Emojis(
         name="remove",
         aliases=["delete", "del"],
         description="Remove Emojis from your guild",
-        brief="emoji remove :emoji: :emoji2: :emoji3:",
+        extras={"Examples": "emoji remove :emoji: :emoji2: :emoji3:"},
     )
     @commands.bot_has_guild_permissions(manage_emojis=True)
     @commands.has_guild_permissions(manage_emojis=True)
@@ -175,7 +175,7 @@ class Emojis(
     @emote.command(
         name="export",
         description="Export ALL emojis to a zip",
-        brief="emoji export",
+        extras={"Examples": "emoji export"},
     )
     async def emoji_export(self, ctx: commands.Context) -> None:
         pass
@@ -190,7 +190,7 @@ class Emojis(
         name="enlarge",
         aliases=["big"],
         description="Enlarge An Emoji To It's Original Content",
-        brief="emoji enlarge :emoji1:",
+        extras={"Examples": "emoji enlarge :emoji1:"},
     )
     @commands.cooldown(1, 3, BucketType.user)
     async def emoji_enlarge(

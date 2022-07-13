@@ -142,7 +142,7 @@ class Logging(
     @logging.command(
         name="toggle",
         description="Toggle Logging on/off",
-        brief="logging toggle on\nlogging toggle off\nlogging toggle True\nlogging toggle False",
+        extras={"Examples": "logging toggle on\nlogging toggle off\nlogging toggle True\nlogging toggle False"},
     )
     async def logging_toggle(
         self, ctx: commands.Context, toggle: Union[str, bool]
@@ -180,7 +180,7 @@ class Logging(
     @logging.command(
         name="channel",
         description="Set the channel used for logging",
-        brief="logging channel 1234567\nlogging channel #channel(mention)",
+        extras={"Examples": "logging channel 1234567\nlogging channel #channel(mention)"},
     )
     async def logging_channel(
         self, ctx: commands.Context, channel: Union[discord.TextChannel, int]
@@ -229,7 +229,7 @@ class Logging(
         name="set",
         aliases=["add"],
         description="Set Which Events Should Be Logged",
-        brief="`logging set message_edited True`\n`logging set message_edited on`\n\n**All Possible Sets**\n`message_edited`\n`message_deleted`\n`nickname_changed`\n`member_updated`\n`member_banned`\n`member_unbanned`\n`member_joined`\n`member_left`\n`role_created`\n`role_updated`\n`role_deleted`\n`member_roles_changed`\n`member_joined_voice_channel`\n`member_left_voice_channel`\n`server_edit`\n`server_emojis_updated`\n`channel_created`\n`channel_updated`\n`channel_deleted`",
+        extras={"Examples": "`logging set message_edited True`\n`logging set message_edited on`\n\n**All Possible Sets**\n`message_edited`\n`message_deleted`\n`nickname_changed`\n`member_updated`\n`member_banned`\n`member_unbanned`\n`member_joined`\n`member_left`\n`role_created`\n`role_updated`\n`role_deleted`\n`member_roles_changed`\n`member_joined_voice_channel`\n`member_left_voice_channel`\n`server_edit`\n`server_emojis_updated`\n`channel_created`\n`channel_updated`\n`channel_deleted`"},
     )
     async def logging_set(
         self,
@@ -262,7 +262,7 @@ class Logging(
     @logging.command(
         name="ignore",
         description="Set Channels To Be Ignored From Logging",
-        brief="`logging ignore #mychannel`\n`logging ignore #mychannel1 #mychannel2 #mychannel3`",
+        extras={"Examples": "`logging ignore #mychannel`\n`logging ignore #mychannel1 #mychannel2 #mychannel3`"},
     )
     async def logging_ignore(
         self, ctx: commands.Context, channels: Greedy[discord.TextChannel]

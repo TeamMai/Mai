@@ -227,7 +227,7 @@ class Osu(
         name="link",
         aliases=["set"],
         description="Link your osu account to your discord account.",
-        brief=f"osu link Whitecat\nosu set Whitecat",
+        extras={"Examples": "osu link Whitecat\nosu set Whitecat"},
     )
     async def osu_link(self, ctx: commands.Context, *, username: str) -> None:
 
@@ -258,7 +258,7 @@ class Osu(
     @osu.command(
         name="stats",
         description="Get Basic Stats About A Player",
-        brief="osu stats Whitecat`\n`osu stats Whitecat -d yes",
+        extras={"Examples": "osu stats Whitecat`\n`osu stats Whitecat -d yes"},
     )
     async def osu_stats(
         self,
@@ -373,7 +373,7 @@ class Osu(
         name="recent",
         aliases=["rs"],
         description="Get A user's most recent play",
-        brief="osu recent Whitecat\n-osu recent\n-osu rs",
+        extras={"Examples": "osu recent Whitecat\n-osu recent\n-osu rs"},
     )
     async def recent(
         self, ctx: commands.Context, *, username: Optional[str]
@@ -489,7 +489,7 @@ class Osu(
         name="avatar",
         aliases=["av"],
         description="Get The Avatar Of A User",
-        brief=f"osu avatar\n-osu avatar Whitecat\n-osu av Whitecat",
+        extras={"Examples": "osu avatar\n-osu avatar Whitecat\n-osu av Whitecat"},
     )
     async def osu_avatar(
         self, ctx: commands.Context, *, username: Optional[str]
@@ -514,7 +514,7 @@ class Osu(
     @osu.command(
         name="skin",
         description="Set Your Favorite Skin",
-        brief="osu skin https://skins.osuck.net/index.php?newsid=1648",
+        extras={"Examples": "osu skin https://skins.osuck.net/index.php?newsid=1648"},
     )
     async def skin(self, ctx: commands.Context, skin: Optional[str]) -> None:
 
@@ -565,7 +565,7 @@ class Osu(
     @osu.command(
         name="passive",
         description="Toggle Passive Mode",
-        brief="osu passive True",
+        extras={"Examples": "osu passive True"},
     )
     async def passive(
         self, ctx: commands.Context, passive: Optional[bool]

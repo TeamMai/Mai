@@ -46,7 +46,7 @@ class Fun(Cog, name="Fun", description="Fun Commands", emoji=Emoji.INFORMATION):
     @commands.command(
         name="httpcat",
         description="Get An HTTP Cat Image",
-        brief="httpcat 404\nhttpcat 200",
+        extras={"Examples": "httpcat 404\nhttpcat 200"},
     )
     @commands.guild_only()
     async def httpcat(
@@ -83,7 +83,7 @@ class Fun(Cog, name="Fun", description="Fun Commands", emoji=Emoji.INFORMATION):
         name="urban",
         aliases=["define"],
         description="Get Urban Definition Of An Word",
-        brief="urban Mai\nurban Discord",
+        extras={"Examples": "urban Mai\nurban Discord"},
     )
     async def urban(self, ctx: commands.Context, word: Optional[str]) -> None:
 

@@ -104,7 +104,7 @@ class Snipes(
 
     @commands.cooldown(1, 2, BucketType.user)
     @snipe.command(
-        name="edit", description="View Edited Messages", brief="snipe edit"
+        name="edit", description="View Edited Messages", extras={"Examples": "snipe edit"}
     )
     async def snipe_edit(self, ctx: commands.Context) -> None:
         guild = await Guild.get_or_none(discord_id=ctx.guild.id)
@@ -142,7 +142,7 @@ class Snipes(
     @snipe.command(
         name="toggle",
         description="Toggle Snipes On Or Off",
-        brief="snipe toggle on\nsnipe toggle off\nsnipe toggle True\nsnipe toggle False",
+        extras={"Examples": "snipe toggle on\nsnipe toggle off\nsnipe toggle True\nsnipe toggle False"},
     )
     @commands.bot_has_permissions(
         send_messages=True,
