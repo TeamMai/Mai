@@ -114,7 +114,7 @@ secretstorage==3.3.2; sys_platform == "linux" and python_version >= "3.7"
 six==1.16.0; python_full_version >= "3.8.0" and python_version >= "3.7" and (python_version >= "3.7" and python_full_version < "3.0.0" or python_full_version >= "3.3.0" and python_version >= "3.7") and (python_version >= "2.7" and python_full_version < "3.0.0" or python_full_version >= "3.6.0" and python_version < "4")
 statcord.py==3.1.0; python_version >= "3.5"
 sympy==1.10.1; python_version >= "3.6"
-tiktokapi==5.2.1
+tiktokapi==5.2.2
 topggpy @ git+https://github.com/top-gg/python-sdk/@master ; python_version >= "3.6"
 tortoise-orm==0.19.2; python_version >= "3.7" and python_version < "4.0"
 tqdm==4.64.0; python_version >= "2.7" and python_full_version < "3.0.0" or python_full_version >= "3.4.0"
