@@ -57,7 +57,7 @@ jeepney==0.8.0; sys_platform == "linux" and python_version >= "3.7"
 jeyyapi @ git+https://github.com/JeyyGit/jeyyapi.git@main
 jinja2==3.1.2; python_version >= "3.6"
 jishaku @ git+https://github.com/Gorialis/jishaku@master ; python_full_version >= "3.8.0"
-keyring==23.6.0; python_version >= "3.7"
+keyring==23.9.1; python_version >= "3.7"
 log-symbols==0.0.14; python_version >= "3.4"
 markdown==3.3.7; python_version >= "3.6"
 markupsafe==2.1.1; python_version >= "3.6"
