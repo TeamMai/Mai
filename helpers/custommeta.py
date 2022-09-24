@@ -1,10 +1,10 @@
 import discord
-
+from discord.cog import CogMeta
 from discord.ext import commands
 
 
 class EmojiCogMeta(discord.cog.CogMeta):
-    def __new__(cls, *args, **kwargs):
+    def __new__(cls, *args, **kwargs) -> CogMeta:
         name, bases, attrs = args
         attrs["emoji"] = kwargs.pop("emoji", [])
 

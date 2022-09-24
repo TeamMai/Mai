@@ -11,16 +11,16 @@ Made With ❤️ By Ghoul & Nerd
 
 """
 
-import discord
-
-from anilist.async_client import Client
-
 from typing import Optional
+
+import discord
+from anilist.async_client import Client
 from discord.ext import commands
+from discord.ext.commands import Bot, BucketType
 
 from helpers.constants import *
-from helpers.logging import log
 from helpers.custommeta import CustomCog as Cog
+from helpers.logging import log
 
 
 class Anilist(
@@ -29,8 +29,8 @@ class Anilist(
     description="Get Info About Your Favorite Anime, Characters And Other Stuff!",
     emoji=Emoji.ANILIST,
 ):
-    def __init__(self, bot: commands.Bot):
-        self.bot = bot
+    def __init__(self, bot: Bot):
+        self.bot: Bot = bot
         self.client = Client()
 
     @commands.Cog.listener()

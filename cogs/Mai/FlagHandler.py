@@ -11,36 +11,35 @@ Made With ❤️ By Ghoul & Nerd
 
 """
 
-import discord
 import datetime
 
-
+import discord
 from discord.ext import commands
-
-from helpers.constants import *
-from helpers.logging import log
-
-from db.models import Guild
+from discord.ext.commands import Bot, BucketType, Cooldown, CooldownMapping
 
 from config.ext.parser import config
+from db.models import Guild
+from helpers.constants import *
+from helpers.logging import log
+from helpers.types import *
 
 
 class FlagHandler(commands.Cog, command_attrs=dict(hidden=True)):
-    def __init__(self, bot: commands.Bot):
-        self.bot = bot
-        self.spam_control = commands.CooldownMapping.from_cooldown(
+    def __init__(self, bot: Bot) -> None:
+        self.bot: Bot = bot
+        self.spam_control: CooldownMapping = commands.CooldownMapping.from_cooldown(
             10, 10, commands.BucketType.user
         )
 
     @commands.Cog.listener()
-    async def on_ready(self):
+    async def on_ready(self) -> None:
         log.info(
             f"[bright_green][EXTENSION][/bright_green][blue3] {type(self).__name__} READY[/blue3]"
         )
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message) -> None:
-        guild = await Guild.c_get_or_none_by_discord_id(message.guild.id)
+        guild: Guild = await Guild.c_get_or_none_by_discord_id(message.guild.id)
 
         if guild.is_bot_blacklisted:
             return
@@ -54,8 +53,8 @@ class FlagHandler(commands.Cog, command_attrs=dict(hidden=True)):
         context = await self.bot.get_context(message)
 
         if context.valid:
-            bucket = self.spam_control.get_bucket(message)
-            retry_after = bucket.update_rate_limit()
+            bucket: Cooldown = self.spam_control.get_bucket(message)
+            retry_after: float | None = bucket.update_rate_limit()
 
             if retry_after:
                 try:
@@ -74,18 +73,10 @@ class FlagHandler(commands.Cog, command_attrs=dict(hidden=True)):
                         icon_url=message.author.avatar.url,
                     )
                     embed.set_thumbnail(url=message.author.avatar.url)
-                    embed.add_field(
-                        name="User Name", value=f"`{message.author}`"
-                    )
-                    embed.add_field(
-                        name="User ID", value=f"`{message.author.id}`"
-                    )
-                    embed.add_field(
-                        name="Channel Name", value=f"`{message.channel}`"
-                    )
-                    embed.add_field(
-                        name="Channel ID", value=f"`{message.channel.id}`"
-                    )
+                    embed.add_field(name="User Name", value=f"`{message.author}`")
+                    embed.add_field(name="User ID", value=f"`{message.author.id}`")
+                    embed.add_field(name="Channel Name", value=f"`{message.channel}`")
+                    embed.add_field(name="Channel ID", value=f"`{message.channel.id}`")
                     await flag_spamming_channel.send(embed=embed)
 
                     user_warn_embed = discord.Embed(
@@ -100,5 +91,5 @@ class FlagHandler(commands.Cog, command_attrs=dict(hidden=True)):
             return
 
 
-def setup(bot):
+def setup(bot) -> None:
     bot.add_cog(FlagHandler(bot))

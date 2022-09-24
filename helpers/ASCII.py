@@ -15,7 +15,7 @@ from .console import console
 
 
 class ASCII:
-    def error() -> str:
+    def ERROR(self) -> None:
         console.print(
             """[red]
 
@@ -30,7 +30,7 @@ class ASCII:
             justify="full",
         )
 
-    def line() -> str:
+    def LINE(self) -> None:
         console.print(
             "[red]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[/red]"
         )

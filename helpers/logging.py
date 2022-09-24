@@ -12,6 +12,7 @@ Made With ❤️ By Ghoul & Nerd
 """
 
 import logging
+from logging import Logger
 
 from rich.logging import RichHandler
 
@@ -31,4 +32,4 @@ logging.basicConfig(
 )
 
 
-log = logging.getLogger("rich")
+log: Logger = logging.getLogger("rich")

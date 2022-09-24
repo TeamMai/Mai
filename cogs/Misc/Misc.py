@@ -12,34 +12,31 @@ Made With ❤️ By Ghoul & Nerd
 """
 
 import io
+import platform
+import time
+from datetime import datetime
+from typing import Final, Optional
+
 import aiohttp
 import discord
 import humanize
-import time
 import psutil
-import platform
-
 from discord.ext import commands
-from typing import Optional
-
-from db.models import Guild
-
-from helpers.constants import *
-from helpers.logging import log
-from helpers.custommeta import CustomCog as Cog
-
-from config.ext.parser import config
-
-from datetime import datetime
-
+from discord.ext.commands import Bot, BucketType
 from sympy.core.symbol import var
 from sympy.parsing.sympy_parser import (
+    implicit_multiplication,
     parse_expr,
     standard_transformations,
-    implicit_multiplication,
 )
 
-from views.info import Invite, SupportServer, Source
+from config.ext.parser import config
+from db.models import Guild
+from helpers.constants import *
+from helpers.custommeta import CustomCog as Cog
+from helpers.logging import log
+from helpers.types import *
+from views.info import Invite, Source, SupportServer
 
 
 class Miscellaneous(
@@ -48,25 +45,25 @@ class Miscellaneous(
     description="Miscellaneous commands about Mai",
     emoji=Emoji.QUESTION,
 ):
-    def __init__(self, bot: commands.Bot):
-        self.bot = bot
-        self.SS_FORMAT = "jpeg"
+    def __init__(self, bot: Bot) -> None:
+        self.bot: Bot = bot
+        self.SS_FORMAT: Final[str] = "jpeg"
 
     @commands.Cog.listener()
-    async def on_ready(self):
+    async def on_ready(self) -> None:
         log.info(
             f"[bright_green][EXTENSION][/bright_green][blue3] {type(self).__name__} READY[/blue3]"
         )
 
     @commands.command(
-        name="invite", description="Get An Invite To The Bot", extras={"Examples": "invite"}
+        name="invite",
+        description="Get An Invite To The Bot",
+        extras={"Examples": "invite"},
     )
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.guild_only()
     async def invite(self, ctx: commands.Context) -> None:
-        await ctx.send(
-            f"Here is your link {ctx.author.mention}!", view=Invite()
-        )
+        await ctx.send(f"Here is your link {ctx.author.mention}!", view=Invite())
 
     @commands.command(
         name="support",
@@ -129,9 +126,7 @@ class Miscellaneous(
         )
 
         pEmbed.set_thumbnail(url=Links.BOT_AVATAR_URL)
-        pEmbed.set_footer(
-            text=Mai.DEVELOPER_FOOTER, icon_url=Links.BOT_AVATAR_URL
-        )
+        pEmbed.set_footer(text=Mai.DEVELOPER_FOOTER, icon_url=Links.BOT_AVATAR_URL)
         await message.edit(content=None, embed=pEmbed)
         await message.add_reaction(Emoji.WHITE_CHECKMARK)
 
@@ -155,7 +150,7 @@ class Miscellaneous(
         embed = discord.Embed(
             title="Bot Uptime",
             color=Colors.DEFAULT,
-            description=f"{Chars.ARROW} {humanized_uptime}",
+            description=f"{Char.ARROW} {humanized_uptime}",
         )
 
         await ctx.send(embed=embed)
@@ -188,7 +183,7 @@ class Miscellaneous(
         if ctx.guild.id == Mai.SUPPORT_SERVER_ID:
             developers = f"Developers: {ghoul.mention}, {nerd.mention}"
         else:
-            developers = f"Developers: `{ghoul.name}`, `{nerd.name}`"
+            developers = f"Developers: `ghoul#0002`, `Nerd#4271`"
 
         embed.add_field(
             name=f"{Emoji.OWNER} Developers",
@@ -199,23 +194,15 @@ class Miscellaneous(
         servers = f"{Emoji.INFORMATION} Servers: `{len(self.bot.guilds)}`"
         users = f"{Emoji.MENTION} Users: `{len(self.bot.users)}`"
 
-        voice_channel_list = [
-            len(guild.voice_channels) for guild in self.bot.guilds
-        ]
+        voice_channel_list = [len(guild.voice_channels) for guild in self.bot.guilds]
         voice_channels = (
             f"{Emoji.VOICE_CHANNEL} Voice Channels: `{sum(voice_channel_list)}`"
         )
 
-        text_channels_list = [
-            len(guild.text_channels) for guild in self.bot.guilds
-        ]
-        text_channels = (
-            f"{Emoji.CHANNEL} Text Channels: `{sum(text_channels_list)}`"
-        )
+        text_channels_list = [len(guild.text_channels) for guild in self.bot.guilds]
+        text_channels = f"{Emoji.CHANNEL} Text Channels: `{sum(text_channels_list)}`"
 
-        stage_channel_list = [
-            len(guild.stage_channels) for guild in self.bot.guilds
-        ]
+        stage_channel_list = [len(guild.stage_channels) for guild in self.bot.guilds]
         stage_channels = (
             f"{Emoji.STAGE_CHANNEL} Stage Channels: `{sum(stage_channel_list)}`"
         )
@@ -259,9 +246,7 @@ class Miscellaneous(
             inline=False,
         )
 
-        embed.set_footer(
-            text=Mai.DEVELOPER_FOOTER, icon_url=ctx.author.avatar.url
-        )
+        embed.set_footer(text=Mai.DEVELOPER_FOOTER, icon_url=ctx.author.avatar.url)
 
         await message.edit(content=None, embed=embed)
 
@@ -294,8 +279,7 @@ class Miscellaneous(
         result = parse_expr(
             expression,
             local_dict=runtime_vars,
-            transformations=standard_transformations
-            + (implicit_multiplication,),
+            transformations=standard_transformations + (implicit_multiplication,),
         )
         embed = discord.Embed(
             title=f"Math Calculated {Emoji.BRAIN}",
@@ -307,9 +291,7 @@ class Miscellaneous(
             [f"{var} -> {val}" for var, val in runtime_vars.items()]
         )
         if var_mappings:
-            embed.add_field(
-                name="Runtime variables", value=var_mappings, inline=False
-            )
+            embed.add_field(name="Runtime variables", value=var_mappings, inline=False)
         embed.add_field(name="Result", value=result, inline=False)
         await message.edit(content=None, embed=embed)
 
@@ -327,9 +309,7 @@ class Miscellaneous(
             description=f"[[Open In Browser]({user.avatar.url})]",
             colour=Colors.DEFAULT,
         )
-        embed.set_author(
-            name=user, url=user.avatar.url, icon_url=user.avatar.url
-        )
+        embed.set_author(name=user, url=user.avatar.url, icon_url=user.avatar.url)
         embed.set_image(url=user.avatar.url)
         embed.set_footer(text=f"Requested by {ctx.author}")
 
@@ -418,7 +398,9 @@ class Miscellaneous(
             await ctx.send(embed=embed)
 
     @commands.command(
-        name="servericon", description="Get Server Icon", extras={"Examples": "servericon"}
+        name="servericon",
+        description="Get Server Icon",
+        extras={"Examples": "servericon"},
     )
     @commands.guild_only()
     async def servericon(self, ctx: commands.Context):
@@ -442,7 +424,10 @@ class Miscellaneous(
         name="screenshot",
         aliases=["ss"],
         description="Take A Screenshot Of An Website",
-        extras={"Notes": "**ONLY** `http://` and `https://` are supported.", "Examples": "screenshot https://google.com\nss https://google.com"},
+        extras={
+            "Notes": "**ONLY** `http://` and `https://` are supported.",
+            "Examples": "screenshot https://google.com\nss https://google.com",
+        },
     )
     @commands.guild_only()
     async def screenshot(

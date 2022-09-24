@@ -11,24 +11,22 @@ Made With ❤️ By Ghoul & Nerd
 
 """
 
-import discord
-
 from typing import Optional, Union
+
+import discord
 from discord.ext import commands
+from discord.ext.commands import Bot, BucketType
 
-from helpers.constants import *
-from helpers.logging import log
-from helpers.custommeta import CustomCog as Cog
-
-from db.models import Guild
 from config.ext.parser import config
+from db.models import Guild
+from helpers.constants import *
+from helpers.custommeta import CustomCog as Cog
+from helpers.logging import log
 
 
-class Developer(
-    Cog, command_attrs=dict(hidden=True), emoji=Emoji.DISCORD_EMPLOYEE
-):
-    def __init__(self, bot: commands.Bot):
-        self.bot = bot
+class Developer(Cog, command_attrs=dict(hidden=True), emoji=Emoji.DISCORD_EMPLOYEE):
+    def __init__(self, bot: Bot):
+        self.bot: Bot = bot
         self.blacklist_channel_id = config["SERVER_BLACKLIST_CHANNEL_ID"]
 
     @commands.Cog.listener()
@@ -60,7 +58,7 @@ class Developer(
             await ctx.send_help(ctx.command)
             return
 
-        guild_id = guild if type(guild) is int else guild.id
+        guild_id = guild if isinstance(guild, int) else guild.id
         guild = await Guild.get(discord_id=guild_id)
 
         if guild.is_bot_blacklisted:
@@ -89,17 +87,17 @@ class Developer(
     @blacklist.command(
         name="remove",
         description="Remove A Server Blacklist From Mai",
-        extras={"Examples": "blacklist remove 1234567\nblacklist remove My Server Name"},
+        extras={
+            "Examples": "blacklist remove 1234567\nblacklist remove My Server Name"
+        },
     )
-    async def remove(
-        self, ctx: commands.Context, guild: Union[discord.Guild, int]
-    ):
+    async def remove(self, ctx: commands.Context, guild: Union[discord.Guild, int]):
 
         if guild is None:
             await ctx.send_help(ctx.command)
             return
 
-        guild_id = guild if type(guild) is int else guild.id
+        guild_id = guild if isinstance(guild, int) else guild.id
         guild = await Guild.get(discord_id=guild_id)
 
         if not guild.is_bot_blacklisted:
@@ -123,9 +121,7 @@ class Developer(
             await ctx.message.add_reaction(Emoji.CHECKMARK)
             await message.add_reaction(Emoji.CHECKMARK)
 
-    @blacklist.command(
-        name="list", description="List All Blacklisted Server ID's"
-    )
+    @blacklist.command(name="list", description="List All Blacklisted Server ID's")
     async def blacklist_list(self, ctx: commands.Context):
         guilds = await Guild.filter(discord_id=ctx.guild.id).all()
         for guild in guilds:

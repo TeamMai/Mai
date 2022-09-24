@@ -11,63 +11,55 @@ Made With ❤️ By Ghoul & Nerd
 
 """
 
-import os
-import sys
-import discord
-import aiohttp
-import watchgod
+import datetime
 import inspect
 import itertools
+import os
+import sys
 import traceback
-import datetime
-
-
 from glob import glob
-from typing import Tuple
+from typing import Literal, Tuple
 
-
+import aiohttp
+import discord
+import watchgod
+from aiohttp import ClientSession
+from discord import Embed, Intents, Message
+from discord.errors import (
+    ExtensionAlreadyLoaded,
+    ExtensionFailed,
+    ExtensionNotFound,
+    ExtensionNotLoaded,
+    NoEntryPointError,
+)
 from discord.ext import commands, tasks
 from discord.ext.commands import AutoShardedBot
 from discord.flags import MemberCacheFlags
-from discord.errors import (
-    NoEntryPointError,
-    ExtensionFailed,
-    ExtensionNotLoaded,
-    ExtensionNotFound,
-    ExtensionAlreadyLoaded,
-)
-
-from pycord18n.extension import I18nExtension, _
+from discord.mentions import AllowedMentions
 from jeyyapi import JeyyAPIClient
-
-from rich.traceback import install
-
+from pycord18n.extension import I18nExtension, _
 from pypresence import AioPresence
-
+from rich.traceback import install
 from tortoise import Tortoise
 from tortoise.exceptions import IntegrityError
 
 from config.ext.parser import config
-
-from db.models import Guild, OSU, ServerLogging
+from db.models import OSU, Guild, ServerLogging
 from db.tortoise.config import tortoise_config
-
 from help_command import MaiHelpCommand
-
+from helpers.console import console
+from helpers.constants import *
+from helpers.logging import log
 from locales.languages import (
-    SPANISH,
     ENGLISH,
     FRENCH,
     GERMAN,
     JAPANESE,
     KOREAN,
     RUSSIAN,
+    SPANISH,
     TURKISH,
 )
-
-from helpers.console import console
-from helpers.constants import *
-from helpers.logging import log
 
 os.system("cls" if sys.platform == "win32" else "clear")
 
@@ -79,42 +71,40 @@ class Mai(AutoShardedBot):
         extensions_dir: str = "cogs",
         *args,
         **kwargs,
-    ):
+    ) -> None:
 
-        self.extensions_dir = extensions_dir
+        self.extensions_dir: str = extensions_dir
 
-        development_mode_passed = development_mode is not None
+        development_mode_passed: bool = development_mode is not None
 
         if not development_mode_passed:
             raise ValueError(
                 "__init__ expects development_mode to be provided, got None"
             )
 
-        self.session = aiohttp.ClientSession()
+        self.session: ClientSession = aiohttp.ClientSession()
 
         self.bot_owners = config["BOT_OWNERS"]
 
-        self.RPC = AioPresence(config["DISCORD_ID"])
+        self.RPC: AioPresence = AioPresence(config["DISCORD_ID"])
 
-        self.development_mode = development_mode
+        self.development_mode: str = development_mode
 
         self.version = config["BOT_VERSION"]
         self.redis_path = config["REDIS_URI"]
         self.default_prefix = config["DEFAULT_PREFIX"]
 
-        self.github = Links.BOT_SOURCE_CODE_URL
-        self.support_server = Links.SUPPORT_SERVER_INVITE
-        self.documentation = Links.BOT_DOCUMENTATION_URL
-        self.invite_url = Links.BOT_INVITE_URL
+        self.github: str = Links.BOT_SOURCE_CODE_URL
+        self.support_server: str = Links.SUPPORT_SERVER_INVITE
+        self.documentation: str = Links.BOT_DOCUMENTATION_URL
+        self.invite_url: str = Links.BOT_INVITE_URL
 
-        self.jeyyapi_client = JeyyAPIClient(session=self.session)
+        self.jeyyapi_client: JeyyAPIClient = JeyyAPIClient(session=self.session)
 
         # -- Tuple of all activities the bot will display as a status
         self.activities = itertools.cycle(
             (
-                discord.Activity(
-                    type=discord.ActivityType.watching, name="-help"
-                ),
+                discord.Activity(type=discord.ActivityType.watching, name="-help"),
                 lambda: discord.Activity(
                     type=discord.ActivityType.listening,
                     name=f"{len(bot.commands)} Commands | {len(bot.users)} Users | {len(bot.guilds)} Servers",
@@ -122,7 +112,7 @@ class Mai(AutoShardedBot):
             )
         )
 
-        self.i18n = I18nExtension(
+        self.i18n: I18nExtension = I18nExtension(
             [
                 FRENCH,
                 ENGLISH,
@@ -136,20 +126,22 @@ class Mai(AutoShardedBot):
             fallback="en",
         )
 
-        self.uptime = datetime.datetime.utcnow()
+        self.uptime: datetime = datetime.datetime.utcnow()
 
         # -- Initalizing parent class
 
         # -- Intents
-        intents = discord.Intents.default()
+        intents: Intents = discord.Intents.default()
         intents.members = True
         intents.typing = False
         intents.presences = True
         intents.message_content = True
 
-        chunk_guilds_at_startup = False
-        allowed_mentions = discord.mentions.AllowedMentions(everyone=False, roles=False)
-        stuff_to_cache = MemberCacheFlags.from_intents(intents)
+        chunk_guilds_at_startup: Literal[False] = False
+        allowed_mentions: AllowedMentions = discord.mentions.AllowedMentions(
+            everyone=False, roles=False
+        )
+        stuff_to_cache: MemberCacheFlags = MemberCacheFlags.from_intents(intents)
 
         super().__init__(
             intents=intents,
@@ -163,12 +155,15 @@ class Mai(AutoShardedBot):
             *args,
             **kwargs,
         )
+
+        # -- Load Extensions
+        self.load_extension("jishaku")
         self.load_extensions()
 
     async def determine_prefix(
         self, bot: commands.Bot, message: discord.Message
     ) -> str:
-        guild = message.guild
+        guild: Guild | None = message.guild
         if guild:
             guild_model, _ = await Guild.c_get_or_create_by_discord_id(guild.id)
             return commands.when_mentioned_or(guild_model.prefix)(bot, message)
@@ -176,7 +171,9 @@ class Mai(AutoShardedBot):
             return commands.when_mentioned_or(self.default_prefix)(bot, message)
 
     async def get_locale(self, ctx: commands.Context) -> None:
-        pass  # FIXME Overriding get_locale for pycordi18n but it's broken so just pass for now.
+        # FIXME Overriding get_locale for pycordi18n but it's broken so just
+        # pass for now.
+        pass
 
     def load_extensions(
         self, reraise_exceptions: bool = False
@@ -212,7 +209,7 @@ class Mai(AutoShardedBot):
     async def rich_presence(self) -> None:
         rpc_enabled = config["RPC_ENABLED"]
         docker_enabled = config["USE_DOCKER"]
-        if rpc_enabled == True and docker_enabled == False:
+        if rpc_enabled and docker_enabled == False:
             await self.RPC.update(
                 details=f"{len(self.guilds)} Guilds",
                 state=f"{len(self.users)} Users",
@@ -256,9 +253,9 @@ class Mai(AutoShardedBot):
         ):
             for change_type, changed_file_path in change:
                 try:
-                    extension_name = changed_file_path.replace(
-                        os.path.sep, "."
-                    )[:-3]
+                    extension_name: str = changed_file_path.replace(os.path.sep, ".")[
+                        :-3
+                    ]
                     if len(extension_name) > 36 and extension_name[-33] == ".":
                         continue
                     if change_type == watchgod.Change.modified:
@@ -291,7 +288,9 @@ class Mai(AutoShardedBot):
         """Called when we have successfully connected to a gateway"""
         await Tortoise.init(tortoise_config.TORTOISE_CONFIG)
         await self.RPC.connect()
-        # await self.i18n.init_bot(bot, self.get_locale(commands.Context)) 'cached_property' has no attribute 'id'. most likely due to how the pycordi18n uses pre_invoke, looking into it.
+        # await self.i18n.init_bot(bot, self.get_locale(commands.Context))
+        # 'cached_property' has no attribute 'id'. most likely due to how the
+        # pycordi18n uses pre_invoke, looking into it.
 
         console.print(
             "[blue3]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[/blue3]"
@@ -318,9 +317,7 @@ class Mai(AutoShardedBot):
         console.print(f"[blue3]Bot Version: {self.version}[/blue3]")
         console.print(f"[blue3]Redis Path: {self.redis_path}[/blue3]")
         console.print(f"[blue3]Default Prefix: {self.default_prefix}[/blue3]")
-        console.print(
-            f"[blue3]Development Version: {self.development_mode}[/blue3]"
-        )
+        console.print(f"[blue3]Development Version: {self.development_mode}[/blue3]")
         console.print(
             "[blue3]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[/blue3]"
         )
@@ -330,18 +327,18 @@ class Mai(AutoShardedBot):
 
 
 # Defining root level commands
-bot = Mai(development_mode="development")
+bot: Mai = Mai(development_mode="development")
 
 # -- Base Events
+
+
 @bot.event
-async def on_guild_join(guild: discord.Guild):
+async def on_guild_join(guild: discord.Guild) -> None:
     try:
-        guild = await Guild.create(
+        guild: Guild = await Guild.create(
             discord_id=guild.id, language="en", prefix="-"
         )
-        log.info(
-            f"[blue3][GUILD] JOINED GUILD {guild.name}) (ID: {guild.id}) [/blue3]"
-        )
+        log.info(f"[blue3][GUILD] JOINED GUILD {guild.name}) (ID: {guild.id}) [/blue3]")
     except IntegrityError:
         log.info(f"[blue3]{guild.name} ({guild.id}) Has Reinvited Mai.[/blue3]")
 
@@ -350,13 +347,13 @@ async def on_guild_join(guild: discord.Guild):
 
 
 @bot.check
-async def is_bot_on_maintenance_mode(ctx: commands.Context):
+async def is_bot_on_maintenance_mode(ctx: commands.Context) -> bool:
 
     maintenance_mode = config["MAINTENANCE_MODE"]
     bot_name = config["BOT_NAME"]
 
     if maintenance_mode and ctx.author.id not in bot.bot_owners:
-        embed = discord.Embed(
+        embed: Embed = discord.Embed(
             color=Colors.ERROR,
             description=f"{Emoji.INFORMATION} {bot_name} Is Currently In Maintenance Mode, Try Again Later.",
         )
@@ -367,13 +364,13 @@ async def is_bot_on_maintenance_mode(ctx: commands.Context):
 
 
 @bot.check
-async def is_guild_blacklisted(ctx: commands.Context):
+async def is_guild_blacklisted(ctx: commands.Context) -> bool:
     guild = await Guild.get(discord_id=ctx.guild.id)
     blacklisted = guild.is_bot_blacklisted
     bot_name = config["BOT_NAME"]
 
     if blacklisted and ctx.author.id not in bot.bot_owners:
-        embed = discord.Embed(
+        embed: Embed = discord.Embed(
             color=Colors.ERROR,
             description=f"{ctx.author.mention}, {ctx.guild.name} Is blacklisted from using {bot_name} for breaking [{bot_name} TOS](https://soontobeourtoslink.com)",
         )
@@ -392,21 +389,25 @@ async def which(ctx: commands.Context, *, command_name: str) -> None:
     """Finds the cog a command is part of"""
     command = bot.get_command(command_name)
     if command is None:
-        embed = discord.Embed(
+        embed: Embed = discord.Embed(
             description=f"{Emoji.ERROR} `{command_name}` **does not exist.**",
             color=Colors.ERROR,
         )
     else:
         inner_command = command.callback
-        command_defined_on = inspect.getsourcelines(inner_command)[1]
-        full_command_signature = f"`async def {inner_command.__name__}{inspect.signature(inner_command)}`"
+        command_defined_on: int = inspect.getsourcelines(inner_command)[1]
+        full_command_signature: str = (
+            f"`async def {inner_command.__name__}{inspect.signature(inner_command)}`"
+        )
         if type(command) is commands.Command and not command.parent:
-            command_type = "`Standalone command`"
+            command_type: Literal["`Standalone command`"] = "`Standalone command`"
         elif type(command) is commands.Group:
-            command_type = "`Command group`"
+            command_type: Literal["`Standalone command`"] = "`Command group`"
         else:
-            command_type = f"Subcommand of `{command.parent.qualified_name}`"
-        embed = discord.Embed(
+            command_type: Literal[
+                "`Standalone command`"
+            ] = f"Subcommand of `{command.parent.qualified_name}`"
+        embed: Embed = discord.Embed(
             title="Target Acquired \U0001F3AF", color=Colors.SUCCESS
         )
         embed.add_field(
@@ -422,9 +423,7 @@ async def which(ctx: commands.Context, *, command_name: str) -> None:
             value=f"`{command_defined_on}`",
             inline=False,
         )
-        embed.add_field(
-            name="Signature", value=full_command_signature, inline=False
-        )
+        embed.add_field(name="Signature", value=full_command_signature, inline=False)
     await ctx.send(embed=embed)
 
 
@@ -434,7 +433,7 @@ async def load(ctx: commands.Context, *, extentions: str) -> None:
     """Loads an extension, owners only"""
 
     if bot.development_mode != "development":
-        embed = discord.Embed(
+        embed: Embed = discord.Embed(
             color=Colors.ERROR,
             description=f"{Emoji.ERROR} `bot.development_mode` set to `{bot.development_mode}`, commands such as `load`, `reload` and `unload` require `bot.development_mode` to be **development**",
         )
@@ -442,7 +441,7 @@ async def load(ctx: commands.Context, *, extentions: str) -> None:
         return
 
     if extentions is None:
-        embed = discord.Embed(
+        embed: Embed = discord.Embed(
             color=Colors.ERROR,
             description=f"{Emoji.ERROR} `extention` argument missing",
         )
@@ -455,33 +454,31 @@ async def load(ctx: commands.Context, *, extentions: str) -> None:
         bot.load_extension(f"cogs.{extention}")
         loaded_extentions.append(extention)
 
-    embed = discord.Embed(
+    embed: Embed = discord.Embed(
         color=Colors.SUCCESS,
         description=f"{', '.join(extention)} Are Now Loaded!",
     )
 
-    message = await ctx.send(embed=embed)
+    message: Message = await ctx.send(embed=embed)
 
     await message.add_reaction(Emoji.CHECKMARK)
 
 
 @load.error
-async def load_error(
-    ctx: commands.Context, error: commands.CommandError
-) -> None:
+async def load_error(ctx: commands.Context, error: commands.CommandError) -> None:
     if isinstance(error, commands.NotOwner):
-        embed = discord.Embed(
+        embed: Embed = discord.Embed(
             color=Colors.ERROR,
             description=f"{Emoji.ERROR} This Can Only Be Used By The Bot's Owners.",
         )
     elif isinstance(error, ExtensionAlreadyLoaded):
-        embed = discord.Embed(
+        embed: Embed = discord.Embed(
             color=Colors.ERROR,
             description=f"{Emoji.ERROR} This Extension Is Already Loaded.",
         )
         await ctx.send(embed=embed)
     elif isinstance(error, ExtensionNotFound):
-        embed = discord.Embed(
+        embed: Embed = discord.Embed(
             color=Colors.ERROR,
             description=f"{Emoji.ERROR} This Extension Does Not Exist.",
         )
@@ -495,7 +492,7 @@ async def load_error(
 async def unload(ctx: commands.Context, *, extentions: str) -> None:
     """Unloads an extension, owners only"""
     if bot.development_mode != "development":
-        embed = discord.Embed(
+        embed: Embed = discord.Embed(
             color=Colors.ERROR,
             description=f"{Emoji.ERROR} `bot.development_mode` set to `{bot.development_mode}`, commands such as `load`, `reload` and `unload` require `bot.development_mode` to be **development**",
         )
@@ -503,7 +500,7 @@ async def unload(ctx: commands.Context, *, extentions: str) -> None:
         return
 
     if extentions is None:
-        embed = discord.Embed(
+        embed: Embed = discord.Embed(
             color=Colors.ERROR,
             description=f"{Emoji.ERROR} `extention` argument missing",
         )
@@ -516,34 +513,32 @@ async def unload(ctx: commands.Context, *, extentions: str) -> None:
         bot.unload_extension(f"cogs.{extention}")
         loaded_extentions.append(extention)
 
-    embed = discord.Embed(
+    embed: Embed = discord.Embed(
         color=Colors.SUCCESS,
         description=f"{', '.join(loaded_extentions)} Are Now UnLoaded!",
     )
 
-    message = await ctx.send(embed=embed)
+    message: Message = await ctx.send(embed=embed)
 
     await message.add_reaction(Emoji.CHECKMARK)
 
 
 @unload.error
-async def unload_error(
-    ctx: commands.Context, error: commands.CommandError
-) -> None:
+async def unload_error(ctx: commands.Context, error: commands.CommandError) -> None:
     if isinstance(error, commands.NotOwner):
-        embed = discord.Embed(
+        embed: Embed = discord.Embed(
             color=Colors.ERROR,
             description=f"{Emoji.ERROR} This Can Only Be Used By The Bot's Owners.",
         )
         await ctx.send(embed=embed)
     elif isinstance(error, ExtensionNotLoaded):
-        embed = discord.Embed(
+        embed: Embed = discord.Embed(
             color=Colors.ERROR,
             description=f"{Emoji.ERROR} This Extension Is Not Loaded.",
         )
         await ctx.send(embed=embed)
     elif isinstance(error, ExtensionNotFound):
-        embed = discord.Embed(
+        embed: Embed = discord.Embed(
             color=Colors.ERROR,
             description=f"{Emoji.ERROR} This Extension Does Not Exist.",
         )
@@ -561,18 +556,16 @@ async def cogs(ctx: commands.Context) -> None:
         cogs.append(f"`{cog}`")
 
     cogs_str = ", ".join(cogs)
-    embed = discord.Embed(
+    embed: Embed = discord.Embed(
         title=f"All Cogs", description=cogs_str, colour=Colors.DEFAULT
     )
     await ctx.send(embed=embed)
 
 
 @cogs.error
-async def cogs_error(
-    ctx: commands.Context, error: commands.CommandError
-) -> None:
+async def cogs_error(ctx: commands.Context, error: commands.CommandError) -> None:
     if isinstance(error, commands.NotOwner):
-        embed = discord.Embed(
+        embed: Embed = discord.Embed(
             color=Colors.ERROR,
             description=f"{Emoji.ERROR} This Can Only Be Used By The Bot's Owners.",
         )
@@ -586,7 +579,7 @@ async def cogs_error(
 async def reload(ctx: commands.Context, *, extension: str) -> None:
     bot.unload_extension(f"cogs.{extension}")
     bot.load_extension(f"cogs.{extension}")
-    embed = discord.Embed(
+    embed: Embed = discord.Embed(
         color=Colors.SUCCESS,
         description=f"{Emoji.CHECKMARK} Successfully Reloaded {extension}",
     )
@@ -594,22 +587,20 @@ async def reload(ctx: commands.Context, *, extension: str) -> None:
 
 
 @reload.error
-async def reload_error(
-    ctx: commands.Context, error: commands.CommandError
-) -> None:
+async def reload_error(ctx: commands.Context, error: commands.CommandError) -> None:
     if isinstance(error, commands.NotOwner):
-        embed = discord.Embed(
+        embed: Embed = discord.Embed(
             color=Colors.ERROR,
             description=f"{Emoji.ERROR} This Can Only Be Used By The Bot's Owners.",
         )
     elif isinstance(error, ExtensionNotLoaded):
-        embed = discord.Embed(
+        embed: Embed = discord.Embed(
             color=Colors.ERROR,
             description=f"{Emoji.ERROR} This Extension Is Not Loaded.",
         )
         await ctx.send(embed=embed)
     elif isinstance(error, ExtensionNotFound):
-        embed = discord.Embed(
+        embed: Embed = discord.Embed(
             color=Colors.ERROR,
             description=f"{Emoji.ERROR} This Extension Does Not Exist.",
         )

@@ -11,20 +11,20 @@ Made With ❤️ By Ghoul & Nerd
 
 """
 
-import discord
 import datetime
-
-from discord.ext import commands
-
 from typing import Optional
 
-from helpers.constants import *
-from helpers.logging import log
-
-from db.models import Guild
+import discord
+from discord import Embed
+from discord.ext import commands
+from discord.ext.commands import Bot, BucketType
 
 from config.ext.parser import config
+from db.models import Guild
+from helpers.constants import *
 from helpers.custommeta import CustomCog as Cog
+from helpers.logging import log
+from helpers.types import *
 
 
 class Server(
@@ -33,25 +33,23 @@ class Server(
     description="Manage how Mai interacts with your server",
     emoji=Emoji.DISCORD_EMPLOYEE,
 ):
-    def __init__(self, bot: commands.Bot):
-        self.bot = bot
+    def __init__(self, bot: Bot) -> None:
+        self.bot: Bot = bot
 
     @commands.Cog.listener()
-    async def on_ready(self):
+    async def on_ready(self) -> None:
         log.info(
             f"[bright_green][EXTENSION][/bright_green][blue3] {type(self).__name__} READY[/blue3]"
         )
 
-    @commands.group(
-        invoke_without_command=True, description="Manage Server Prefix"
-    )
+    @commands.group(invoke_without_command=True, description="Manage Server Prefix")
     @commands.cooldown(1, 3, commands.BucketType.user)
     @commands.guild_only()
-    async def prefix(self, ctx: commands.Context):
+    async def prefix(self, ctx: commands.Context) -> None:
         if ctx.invoked_subcommand is None:
-            guild = await Guild.c_get_or_none_by_discord_id(ctx.guild.id)
+            guild: Guild = await Guild.c_get_or_none_by_discord_id(ctx.guild.id)
             prefix = guild.prefix
-            embed = discord.Embed(
+            embed: Embed = discord.Embed(
                 color=Colors.DEFAULT,
                 description=f"{ctx.author.mention}, My current prefix is `{prefix}` or {self.bot.user.mention}",
             )
@@ -63,20 +61,20 @@ class Server(
         extras={"Examples": "prefix set !\nprefix set $$"},
     )
     @commands.has_permissions(administrator=True)
-    async def prefix_set(self, ctx: commands.Context, prefix: Optional[str]):
+    async def prefix_set(self, ctx: commands.Context, prefix: Optional[str]) -> None:
 
-        if prefix == None:
-            embed = discord.Embed(
+        if prefix is None:
+            embed: Embed = discord.Embed(
                 color=Colors.ERROR,
                 description=f"{Emoji.ERROR} Please Provide a Prefix.",
             )
             await ctx.send(embed=embed, delete_after=15)
             return
 
-        guild = await Guild.c_get_or_none_by_discord_id(ctx.guild.id)
+        guild: Guild = await Guild.c_get_or_none_by_discord_id(ctx.guild.id)
 
         if prefix == guild.prefix:
-            embed = discord.Embed(
+            embed: Embed = discord.Embed(
                 color=Colors.DEFAULT,
                 description=f"My prefix for `{ctx.guild.name}` is already `{prefix}`!",
             )
@@ -95,16 +93,14 @@ class Server(
                 datetime.datetime.utcnow(),
             )
 
-            embed = discord.Embed(
+            embed: Embed = discord.Embed(
                 color=Colors.DEFAULT,
                 description=f"I set your guild's prefix to `{guild.prefix}`",
             )
             await ctx.send(embed=embed)
         else:
-            await Guild.create(
-                discord_id=ctx.guild.id, prefix=prefix, language="en"
-            )
-            embed = discord.Embed(
+            await Guild.create(discord_id=ctx.guild.id, prefix=prefix, language="en")
+            embed: Embed = discord.Embed(
                 color=Colors.DEFAULT,
                 description=f"I set your guild's prefix to `{guild.prefix}`",
             )
@@ -116,9 +112,9 @@ class Server(
         extras={"Examples": "prefix reset"},
     )
     @commands.has_permissions(administrator=True)
-    async def prefix_reset(self, ctx: commands.Context):
+    async def prefix_reset(self, ctx: commands.Context) -> None:
 
-        guild = await Guild.c_get_or_none_by_discord_id(ctx.guild.id)
+        guild: Guild = await Guild.c_get_or_none_by_discord_id(ctx.guild.id)
         old_prefix = guild.prefix
         if guild is not None:
             guild.prefix = config["DEFAULT_PREFIX"]
@@ -131,21 +127,19 @@ class Server(
                 "-",
                 datetime.datetime.utcnow(),
             )
-            embed = discord.Embed(
+            embed: Embed = discord.Embed(
                 color=Colors.DEFAULT,
                 description=f"I resetted this guild's prefix to `{guild.prefix}`",
             )
             await ctx.send(embed=embed)
         else:
-            await Guild.create(
-                discord_id=ctx.guild.id, prefix="-", language="en"
-            )
-            embed = discord.Embed(
+            await Guild.create(discord_id=ctx.guild.id, prefix="-", language="en")
+            embed: Embed = discord.Embed(
                 color=Colors.DEFAULT,
                 description="Prefix Resetted to default.",
             )
             await ctx.send(embed=embed)
 
 
-def setup(bot):
+def setup(bot) -> None:
     bot.add_cog(Server(bot))

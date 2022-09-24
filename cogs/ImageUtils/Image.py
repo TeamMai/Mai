@@ -11,22 +11,19 @@ Made With ❤️ By Ghoul & Nerd
 
 """
 
-import discord
-import aiohttp
-
+from io import BytesIO
 from typing import Optional
-from discord.ext import commands
 
+import aiohttp
+import discord
 from asyncdagpi import Client as DagpiClient
 from asyncdagpi import ImageFeatures
-
-from io import BytesIO
-
-from helpers.constants import *
-from helpers.logging import log
-from helpers.custommeta import CustomCog as Cog
+from discord.ext import commands
 
 from config.ext.parser import config
+from helpers.constants import *
+from helpers.custommeta import CustomCog as Cog
+from helpers.logging import log
 
 
 class ImageUtils(
@@ -35,7 +32,7 @@ class ImageUtils(
     description="Funny Image Utilities",
     emoji=Emoji.IMAGE,
 ):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Bot):
         self.bot = bot
         self.dagpi_client = DagpiClient(
             config["DAGPI_API_KEY"], session=self.bot.session
@@ -90,9 +87,7 @@ class ImageUtils(
                 ImageFeatures.wanted(), await self.get_member_avatar(member).url
             )
 
-            file = discord.File(
-                fp=image.image, filename=f"wanted.{image.format}"
-            )
+            file = discord.File(fp=image.image, filename=f"wanted.{image.format}")
 
             await ctx.send(file=file)
 
@@ -108,7 +103,9 @@ class ImageUtils(
             member = ctx.author
 
         async with ctx.channel.typing():
-            image = await self.bot.jeyyapi_client.bonks(await self.get_member_avatar(member))
+            image = await self.bot.jeyyapi_client.bonks(
+                await self.get_member_avatar(member)
+            )
 
             file = await self.generate_file(image, member, "bonks")
 
@@ -126,7 +123,9 @@ class ImageUtils(
             member = ctx.author
 
         async with ctx.channel.typing():
-            image = await self.bot.jeyyapi_client.patpat(await self.get_member_avatar(member))
+            image = await self.bot.jeyyapi_client.patpat(
+                await self.get_member_avatar(member)
+            )
 
             file = await self.generate_file(image, member, "patpat")
 
@@ -144,7 +143,9 @@ class ImageUtils(
             member = ctx.author
 
         async with ctx.channel.typing():
-            image = await self.bot.jeyyapi_client.burn(await self.get_member_avatar(member))
+            image = await self.bot.jeyyapi_client.burn(
+                await self.get_member_avatar(member)
+            )
 
             file = await self.generate_file(image, member, "burn")
 
@@ -162,7 +163,9 @@ class ImageUtils(
             member = ctx.author
 
         async with ctx.channel.typing():
-            image = await self.bot.jeyyapi_client.glitch(await self.get_member_avatar(member))
+            image = await self.bot.jeyyapi_client.glitch(
+                await self.get_member_avatar(member)
+            )
 
             file = await self.generate_file(image, member, "glitch")
 
@@ -180,7 +183,9 @@ class ImageUtils(
             member = ctx.author
 
         async with ctx.channel.typing():
-            image = await self.bot.jeyyapi_client.boil(await self.get_member_avatar(member))
+            image = await self.bot.jeyyapi_client.boil(
+                await self.get_member_avatar(member)
+            )
 
             file = await self.generate_file(image, member, "boil")
 
@@ -198,7 +203,9 @@ class ImageUtils(
             member = ctx.author
 
         async with ctx.channel.typing():
-            image = await self.bot.jeyyapi_client.earthquake(await self.get_member_avatar(member))
+            image = await self.bot.jeyyapi_client.earthquake(
+                await self.get_member_avatar(member)
+            )
 
             file = await self.generate_file(image, member, "earthquake")
 
@@ -216,7 +223,9 @@ class ImageUtils(
             member = ctx.author
 
         async with ctx.channel.typing():
-            image = await self.bot.jeyyapi_client.hearts(await self.get_member_avatar(member))
+            image = await self.bot.jeyyapi_client.hearts(
+                await self.get_member_avatar(member)
+            )
 
             file = await self.generate_file(image, member, "hearts")
 
@@ -234,7 +243,9 @@ class ImageUtils(
             member = ctx.author
 
         async with ctx.channel.typing():
-            image = await self.bot.jeyyapi_client.shock(await self.get_member_avatar(member))
+            image = await self.bot.jeyyapi_client.shock(
+                await self.get_member_avatar(member)
+            )
 
             file = await self.generate_file(image, member, "shock")
 
@@ -252,7 +263,9 @@ class ImageUtils(
             member = ctx.author
 
         async with ctx.channel.typing():
-            image = await self.bot.jeyyapi_client.abstract(await self.get_member_avatar(member))
+            image = await self.bot.jeyyapi_client.abstract(
+                await self.get_member_avatar(member)
+            )
 
             file = await self.generate_file(image, member, "abstract")
 
@@ -270,7 +283,9 @@ class ImageUtils(
             member = ctx.author
 
         async with ctx.channel.typing():
-            image = await self.bot.jeyyapi_client.infinity(await self.get_member_avatar(member))
+            image = await self.bot.jeyyapi_client.infinity(
+                await self.get_member_avatar(member)
+            )
 
             file = await self.generate_file(image, member, "infinity")
 
@@ -288,7 +303,9 @@ class ImageUtils(
             member = ctx.author
 
         async with ctx.channel.typing():
-            image = await self.bot.jeyyapi_client.bomb(await self.get_member_avatar(member))
+            image = await self.bot.jeyyapi_client.bomb(
+                await self.get_member_avatar(member)
+            )
 
             file = await self.generate_file(image, member, "bomb")
 
@@ -306,7 +323,9 @@ class ImageUtils(
             member = ctx.author
 
         async with ctx.channel.typing():
-            image = await self.bot.jeyyapi_client.explicit(await self.get_member_avatar(member))
+            image = await self.bot.jeyyapi_client.explicit(
+                await self.get_member_avatar(member)
+            )
 
             file = await self.generate_file(image, member, "explicit")
 
@@ -324,7 +343,9 @@ class ImageUtils(
             member = ctx.author
 
         async with ctx.channel.typing():
-            image = await self.bot.jeyyapi_client.blur(await self.get_member_avatar(member))
+            image = await self.bot.jeyyapi_client.blur(
+                await self.get_member_avatar(member)
+            )
 
             file = await self.generate_file(image, member, "blur")
 
@@ -342,7 +363,9 @@ class ImageUtils(
             member = ctx.author
 
         async with ctx.channel.typing():
-            image = await self.bot.jeyyapi_client.lamp(await self.get_member_avatar(member))
+            image = await self.bot.jeyyapi_client.lamp(
+                await self.get_member_avatar(member)
+            )
 
             file = await self.generate_file(image, member, "lamp")
 
@@ -360,7 +383,9 @@ class ImageUtils(
             member = ctx.author
 
         async with ctx.channel.typing():
-            image = await self.bot.jeyyapi_client.rain(await self.get_member_avatar(member))
+            image = await self.bot.jeyyapi_client.rain(
+                await self.get_member_avatar(member)
+            )
 
             file = await self.generate_file(image, member, "rain")
 
@@ -378,7 +403,9 @@ class ImageUtils(
             member = ctx.author
 
         async with ctx.channel.typing():
-            image = await self.bot.jeyyapi_client.canny(await self.get_member_avatar(member))
+            image = await self.bot.jeyyapi_client.canny(
+                await self.get_member_avatar(member)
+            )
 
             file = await self.generate_file(image, member, "canny")
 
@@ -396,7 +423,9 @@ class ImageUtils(
             member = ctx.author
 
         async with ctx.channel.typing():
-            image = await self.bot.jeyyapi_client.cartoon(await self.get_member_avatar(member))
+            image = await self.bot.jeyyapi_client.cartoon(
+                await self.get_member_avatar(member)
+            )
 
             file = await self.generate_file(image, member, "cartoon")
 
@@ -414,7 +443,9 @@ class ImageUtils(
             member = ctx.author
 
         async with ctx.channel.typing():
-            image = await self.bot.jeyyapi_client.layers(await self.get_member_avatar(member))
+            image = await self.bot.jeyyapi_client.layers(
+                await self.get_member_avatar(member)
+            )
 
             file = await self.generate_file(image, member, "layers")
 
@@ -432,7 +463,9 @@ class ImageUtils(
             member = ctx.author
 
         async with ctx.channel.typing():
-            image = await self.bot.jeyyapi_client.radiate(await self.get_member_avatar(member))
+            image = await self.bot.jeyyapi_client.radiate(
+                await self.get_member_avatar(member)
+            )
 
             file = await self.generate_file(image, member, "radiate")
 
@@ -450,7 +483,9 @@ class ImageUtils(
             member = ctx.author
 
         async with ctx.channel.typing():
-            image = await self.bot.jeyyapi_client.shoot(await self.get_member_avatar(member))
+            image = await self.bot.jeyyapi_client.shoot(
+                await self.get_member_avatar(member)
+            )
 
             file = await self.generate_file(image, member, "shoot")
 
@@ -461,14 +496,14 @@ class ImageUtils(
         description=f"Return TV Image Of Someones Avatar",
         extras={"Examples": "tv @Member\ntv"},
     )
-    async def tv(
-        self, ctx: commands.Context, member: Optional[discord.Member]
-    ) -> None:
+    async def tv(self, ctx: commands.Context, member: Optional[discord.Member]) -> None:
         if not member:
             member = ctx.author
 
         async with ctx.channel.typing():
-            image = await self.bot.jeyyapi_client.tv(await self.get_member_avatar(member))
+            image = await self.bot.jeyyapi_client.tv(
+                await self.get_member_avatar(member)
+            )
 
             file = await self.generate_file(image, member, "tv")
 
@@ -486,7 +521,9 @@ class ImageUtils(
             member = ctx.author
 
         async with ctx.channel.typing():
-            image = await self.bot.jeyyapi_client.shear(await self.get_member_avatar(member))
+            image = await self.bot.jeyyapi_client.shear(
+                await self.get_member_avatar(member)
+            )
 
             file = await self.generate_file(image, member, "shear")
 
@@ -504,7 +541,9 @@ class ImageUtils(
             member = ctx.author
 
         async with ctx.channel.typing():
-            image = await self.bot.jeyyapi_client.magnify(await self.get_member_avatar(member))
+            image = await self.bot.jeyyapi_client.magnify(
+                await self.get_member_avatar(member)
+            )
 
             file = await self.generate_file(image, member, "magnify")
 
@@ -522,7 +561,9 @@ class ImageUtils(
             member = ctx.author
 
         async with ctx.channel.typing():
-            image = await self.bot.jeyyapi_client.print(await self.get_member_avatar(member))
+            image = await self.bot.jeyyapi_client.print(
+                await self.get_member_avatar(member)
+            )
 
             file = await self.generate_file(image, member, "print")
 
@@ -540,7 +581,9 @@ class ImageUtils(
             member = ctx.author
 
         async with ctx.channel.typing():
-            image = await self.bot.jeyyapi_client.matrix(await self.get_member_avatar(member))
+            image = await self.bot.jeyyapi_client.matrix(
+                await self.get_member_avatar(member)
+            )
 
             file = await self.generate_file(image, member, "matrix")
 
@@ -558,7 +601,9 @@ class ImageUtils(
             member = ctx.author
 
         async with ctx.channel.typing():
-            image = await self.bot.jeyyapi_client.sensitive(await self.get_member_avatar(member))
+            image = await self.bot.jeyyapi_client.sensitive(
+                await self.get_member_avatar(member)
+            )
 
             file = await self.generate_file(image, member, "sensitive")
 
@@ -576,7 +621,9 @@ class ImageUtils(
             member = ctx.author
 
         async with ctx.channel.typing():
-            image = await self.bot.jeyyapi_client.gallery(await self.get_member_avatar(member))
+            image = await self.bot.jeyyapi_client.gallery(
+                await self.get_member_avatar(member)
+            )
 
             file = await self.generate_file(image, member, "gallery")
 
@@ -594,7 +641,9 @@ class ImageUtils(
             member = ctx.author
 
         async with ctx.channel.typing():
-            image = await self.bot.jeyyapi_client.paparazzi(await self.get_member_avatar(member))
+            image = await self.bot.jeyyapi_client.paparazzi(
+                await self.get_member_avatar(member)
+            )
 
             file = await self.generate_file(image, member, "paparazzi")
 
@@ -612,7 +661,9 @@ class ImageUtils(
             member = ctx.author
 
         async with ctx.channel.typing():
-            image = await self.bot.jeyyapi_client.balls(await self.get_member_avatar(member))
+            image = await self.bot.jeyyapi_client.balls(
+                await self.get_member_avatar(member)
+            )
 
             file = await self.generate_file(image, member, "balls")
 
@@ -630,7 +681,9 @@ class ImageUtils(
             member = ctx.author
 
         async with ctx.channel.typing():
-            image = await self.bot.jeyyapi_client.equation(await self.get_member_avatar(member))
+            image = await self.bot.jeyyapi_client.equation(
+                await self.get_member_avatar(member)
+            )
 
             file = await self.generate_file(image, member, "equation")
 
@@ -648,7 +701,9 @@ class ImageUtils(
             member = ctx.author
 
         async with ctx.channel.typing():
-            image = await self.bot.jeyyapi_client.half_invert(await self.get_member_avatar(member))
+            image = await self.bot.jeyyapi_client.half_invert(
+                await self.get_member_avatar(member)
+            )
 
             file = await self.generate_file(image, member, "half_invert")
 
@@ -666,7 +721,9 @@ class ImageUtils(
             member = ctx.author
 
         async with ctx.channel.typing():
-            image = await self.bot.jeyyapi_client.roll(await self.get_member_avatar(member))
+            image = await self.bot.jeyyapi_client.roll(
+                await self.get_member_avatar(member)
+            )
 
             file = await self.generate_file(image, member, "roll")
 
@@ -684,7 +741,9 @@ class ImageUtils(
             member = ctx.author
 
         async with ctx.channel.typing():
-            image = await self.bot.jeyyapi_client.clock(await self.get_member_avatar(member))
+            image = await self.bot.jeyyapi_client.clock(
+                await self.get_member_avatar(member)
+            )
 
             file = await self.generate_file(image, member, "clock")
 
@@ -702,7 +761,9 @@ class ImageUtils(
             member = ctx.author
 
         async with ctx.channel.typing():
-            image = await self.bot.jeyyapi_client.optics(await self.get_member_avatar(member))
+            image = await self.bot.jeyyapi_client.optics(
+                await self.get_member_avatar(member)
+            )
 
             file = await self.generate_file(image, member, "optics")
 
@@ -720,7 +781,9 @@ class ImageUtils(
             member = ctx.author
 
         async with ctx.channel.typing():
-            image = await self.bot.jeyyapi_client.warp(await self.get_member_avatar(member))
+            image = await self.bot.jeyyapi_client.warp(
+                await self.get_member_avatar(member)
+            )
 
             file = await self.generate_file(image, member, "warp")
 
@@ -738,7 +801,9 @@ class ImageUtils(
             member = ctx.author
 
         async with ctx.channel.typing():
-            image = await self.bot.jeyyapi_client.youtube(await self.get_member_avatar(member))
+            image = await self.bot.jeyyapi_client.youtube(
+                await self.get_member_avatar(member)
+            )
 
             file = await self.generate_file(image, member, "youtube")
 
@@ -756,25 +821,33 @@ class ImageUtils(
             member = ctx.author
 
         async with ctx.channel.typing():
-            image = await self.bot.jeyyapi_client.scrapbook(await self.get_member_avatar(member))
+            image = await self.bot.jeyyapi_client.scrapbook(
+                await self.get_member_avatar(member)
+            )
 
             file = await self.generate_file(image, member, "scrapbook")
 
             await ctx.send(file=file)
 
-    @commands.command(nme="sob", description="Return sobbing image of someones avatar", extras={"Examples": "sob @Member\nsob"})
-    async def sob(self, ctx: commands.Context, member: Optional[discord.Member]) -> None:
+    @commands.command(
+        nme="sob",
+        description="Return sobbing image of someones avatar",
+        extras={"Examples": "sob @Member\nsob"},
+    )
+    async def sob(
+        self, ctx: commands.Context, member: Optional[discord.Member]
+    ) -> None:
         if not member:
             member = ctx.author
 
         async with ctx.channel.typing():
-            image = await self.bot.jeyyapi_client.sob(await self.get_member_avatar(member))
+            image = await self.bot.jeyyapi_client.sob(
+                await self.get_member_avatar(member)
+            )
 
             file = await self.generate_file(image, member, "sob")
 
             await ctx.send(file=file)
-
-            
 
 
 def setup(bot):

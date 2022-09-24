@@ -10,12 +10,13 @@
 Made With ❤️ By Ghoul & Nerd
 
 """
-
 from typing import Optional, Union
 
 import discord
-from db.models import Users
 from discord.ext import commands
+from discord.ext.commands import Bot, BucketType
+
+from db.models import Users
 from helpers.constants import *
 from helpers.custommeta import CustomCog as Cog
 from helpers.logging import log
@@ -27,7 +28,7 @@ class Tracking(
     description="Track your usage of Mai",
     emoji=Emoji.CHECKMARK,
 ):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
     @commands.Cog.listener()
@@ -45,9 +46,7 @@ class Tracking(
         else:
             return
 
-    @commands.group(
-        invoke_without_subcommand=True, description="Manage Tracking"
-    )
+    @commands.group(invoke_without_subcommand=True, description="Manage Tracking")
     @commands.guild_only()
     async def tracking(self, ctx: commands.Context) -> None:
         if ctx.invoked_subcommand is None:
@@ -57,7 +56,9 @@ class Tracking(
     @tracking.command(
         name="toggle",
         description="Toggle Tracking on/off",
-        extras={"Examples": "tracking toggle on\ntracking toggle off\ntracking toggle True\ntracking toggle False"},
+        extras={
+            "Examples": "tracking toggle on\ntracking toggle off\ntracking toggle True\ntracking toggle False"
+        },
     )
     async def tracking_toggle(
         self, ctx: commands.Context, toggle: Union[str, bool]
@@ -65,7 +66,7 @@ class Tracking(
 
         user = await Users.get_or_create(user_id=ctx.author.id)
 
-        if type(toggle) is str:
+        if isinstance(toggle, str):
             if toggle == "on":
                 toggle = True
             elif toggle == "off":

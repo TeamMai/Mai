@@ -11,9 +11,11 @@ Made With ❤️ By Ghoul & Nerd
 
 """
 
+from typing import Any
+
 from config.ext.parser import config
 
-TORTOISE_CONFIG = {
+TORTOISE_CONFIG: dict[str, Any] = {
     "connections": {"default": config["DATABASE_URI"]},
     "apps": {
         config["TORTOISE_APP_NAME"]: {

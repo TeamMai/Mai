@@ -16,6 +16,7 @@ from itertools import groupby
 from discord import Embed
 
 from db.models import ServerLogging
+
 from .constants import *
 
 
@@ -36,7 +37,7 @@ def emoji(value: bool) -> str:
 
 
 def format_setting(model: ServerLogging, setting: str) -> str:
-    setting_title = (
+    setting_title: str = (
         f"`{' '.join(setting.split('_')[1:]).replace('_', ' ').title()}`"
     )
     enabled = getattr(model, setting)
@@ -56,11 +57,11 @@ def format_logging_model(model: ServerLogging) -> Embed:
     Embed
         Embed representing all settings of the logging system
     """
-    embed = Embed(color=Colors.DEFAULT)
+    embed: Embed = Embed(color=Colors.DEFAULT)
     grouped = groupby(sorted(ValidTypes.Logging), key=lambda k: k.split("_")[0])
     for group_name, contents in grouped:
         group_title = group_name.title()
-        settings = "\n".join(
+        settings: str = "\n".join(
             [format_setting(model, setting) for setting in contents]
         )
         embed.add_field(name=group_title, value=settings, inline=False)

@@ -1,5 +1,8 @@
 import discord
+from discord import Embed, SelectOption
+
 from helpers.constants import *
+from helpers.types import MEMBER, USER
 
 
 class UserModal(discord.ui.Modal):
@@ -26,15 +29,15 @@ class UserModal(discord.ui.Modal):
             )
         )
 
-    async def callback(self, interaction: discord.Interaction):
+    async def callback(self, interaction: discord.Interaction) -> None:
 
         # -- Logging Embed
-        embed = discord.Embed(
+        embed: Embed = discord.Embed(
             title=f"{Emoji.REPORT} Report Results",
             color=discord.Color.random(),
             description=f"{Emoji.WHITE_CHECKMARK} {interaction.user} **Just Reported A Member!**",
         )
-        interaction_user = interaction.user
+        interaction_user: USER | MEMBER | None = interaction.user
         embed.set_author(
             name=interaction_user.name, icon_url=interaction_user.avatar.url
         )
@@ -62,7 +65,7 @@ class UserModal(discord.ui.Modal):
 
         # -- User Embed
 
-        embed = discord.Embed(
+        embed: Embed = discord.Embed(
             color=Colors.SUCCESS,
             description=f"{Emoji.WHITE_CHECKMARK} Report Successfully Sent!",
         )
@@ -73,9 +76,7 @@ class GuildModal(discord.ui.Modal):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
-        self.add_item(
-            discord.ui.InputText(label="Guild ID", placeholder="12345678910")
-        )
+        self.add_item(discord.ui.InputText(label="Guild ID", placeholder="12345678910"))
 
         self.add_item(
             discord.ui.InputText(
@@ -93,15 +94,15 @@ class GuildModal(discord.ui.Modal):
             )
         )
 
-    async def callback(self, interaction: discord.Interaction):
+    async def callback(self, interaction: discord.Interaction) -> None:
 
         # -- Logging Embed
-        embed = discord.Embed(
+        embed: Embed = discord.Embed(
             title=f"{Emoji.REPORT} Report Results",
             color=discord.Color.random(),
             description=f"{Emoji.WHITE_CHECKMARK} {interaction.user} **Just Reported A Guild!**",
         )
-        interaction_user = interaction.user
+        interaction_user: USER | MEMBER | None = interaction.user
         embed.set_author(
             name=interaction_user.name, icon_url=interaction_user.avatar.url
         )
@@ -129,7 +130,7 @@ class GuildModal(discord.ui.Modal):
 
         # -- User Embed
 
-        embed = discord.Embed(
+        embed: Embed = discord.Embed(
             color=Colors.SUCCESS,
             description=f"{Emoji.WHITE_CHECKMARK} Report Successfully Sent!",
         )
@@ -171,14 +172,14 @@ class BugModal(discord.ui.Modal):
             )
         )
 
-    async def callback(self, interaction: discord.Interaction):
+    async def callback(self, interaction: discord.Interaction) -> None:
         # -- Logging Embed
-        embed = discord.Embed(
+        embed: Embed = discord.Embed(
             title=f"{Emoji.REPORT} Report Results",
             color=discord.Color.random(),
             description=f"{Emoji.WHITE_CHECKMARK} {interaction.user} **Just Reported A Bug!**",
         )
-        interaction_user = interaction.user
+        interaction_user: USER | MEMBER | None = interaction.user
         embed.set_author(
             name=interaction_user.name, icon_url=interaction_user.avatar.url
         )
@@ -211,7 +212,7 @@ class BugModal(discord.ui.Modal):
 
         # -- User Embed
 
-        embed = discord.Embed(
+        embed: Embed = discord.Embed(
             color=Colors.SUCCESS,
             description=f"{Emoji.WHITE_CHECKMARK} Report Successfully Sent!",
         )
@@ -219,10 +220,10 @@ class BugModal(discord.ui.Modal):
 
 
 class Dropdown(discord.ui.Select):
-    def __init__(self, bot):
+    def __init__(self, bot) -> None:
         self.bot = bot
 
-        options = [
+        options: list[SelectOption] = [
             discord.SelectOption(
                 label="User",
                 description="You are reporting a User.",
@@ -247,7 +248,7 @@ class Dropdown(discord.ui.Select):
             options=options,
         )
 
-    async def callback(self, interaction: discord.Interaction):
+    async def callback(self, interaction: discord.Interaction) -> None:
 
         if self.values[0] == "User":
             await interaction.response.send_modal(UserModal(title="USER"))
@@ -256,13 +257,11 @@ class Dropdown(discord.ui.Select):
         elif self.values[0] == "Bug":
             await interaction.response.send_modal(BugModal(title="BUG"))
         else:
-            await interaction.response.send_message(
-                f"{Emoji.ERROR} Error Occurred"
-            )
+            await interaction.response.send_message(f"{Emoji.ERROR} Error Occurred")
 
 
 class ReportDropdown(discord.ui.View):
-    def __init__(self, bot):
+    def __init__(self, bot) -> None:
         self.bot = bot
         super().__init__()
 

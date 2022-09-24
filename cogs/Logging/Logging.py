@@ -11,30 +11,28 @@ Made With ❤️ By Ghoul & Nerd
 
 """
 
-import discord
-from discord.ext.tasks import T
-import humanize
-
-from typing import Optional, Union
-from tortoise.exceptions import DoesNotExist, IntegrityError
 from datetime import datetime
+from typing import Optional, Union
 
+import discord
+import humanize
+from discord import AuditLogAction, AuditLogEntry
 from discord.ext import commands
 from discord.ext.commands import BucketType, Greedy
-from discord import AuditLogAction, AuditLogEntry
-
-from helpers.constants import *
-from helpers.logging import log
-from helpers.formatting import format_logging_model
-from helpers.custommeta import CustomCog as Cog
+from discord.ext.tasks import T
+from tortoise.exceptions import DoesNotExist, IntegrityError
 
 from db.models import Guild, ServerLogging
+from helpers.constants import *
+from helpers.custommeta import CustomCog as Cog
+from helpers.formatting import format_logging_model
+from helpers.logging import log
 
 
 class Logging(
     Cog, name="Logging", description="Manage Server Logging", emoji=":pencil:"
 ):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Bot):
         self.bot = bot
 
     @commands.Cog.listener()
@@ -85,7 +83,7 @@ class Logging(
         [discord.TextChannel]
             The Logging Channel
         """
-        guild_id = guild.id if type(guild) is discord.Guild else int(guild)
+        guild_id = guild.id if isinstance(guild, discord.Guild) else int(guild)
 
         guild_model = (await Guild.get_or_create(discord_id=guild_id))[0]
 
@@ -96,13 +94,11 @@ class Logging(
 
             text_channels = (
                 self.bot.get_guild(guild).text_channels
-                if type(guild) is int
+                if isinstance(guild, int)
                 else guild.text_channels
             )
 
-            logging_channel = discord.utils.get(
-                text_channels, id=logging_channel_id
-            )
+            logging_channel = discord.utils.get(text_channels, id=logging_channel_id)
             if logging_channel is None:
                 pass
             else:
@@ -129,9 +125,7 @@ class Logging(
 
         return logging_model
 
-    @commands.group(
-        invoke_without_subcommand=True, description="Manage Logging"
-    )
+    @commands.group(invoke_without_subcommand=True, description="Manage Logging")
     @commands.guild_only()
     async def logging(self, ctx: commands.Context) -> None:
         if ctx.invoked_subcommand is None:
@@ -142,17 +136,17 @@ class Logging(
     @logging.command(
         name="toggle",
         description="Toggle Logging on/off",
-        extras={"Examples": "logging toggle on\nlogging toggle off\nlogging toggle True\nlogging toggle False"},
+        extras={
+            "Examples": "logging toggle on\nlogging toggle off\nlogging toggle True\nlogging toggle False"
+        },
     )
-    async def logging_toggle(
-        self, ctx: commands.Context, toggle: Union[str, bool]
-    ):
+    async def logging_toggle(self, ctx: commands.Context, toggle: Union[str, bool]):
 
         guild = await Guild.from_context(ctx)
 
         logging = await ServerLogging.get_or_none(guild=guild)
 
-        if type(toggle) is str:
+        if isinstance(toggle, str):
             if toggle == "on":
                 toggle = True
             elif toggle == "off":
@@ -180,13 +174,15 @@ class Logging(
     @logging.command(
         name="channel",
         description="Set the channel used for logging",
-        extras={"Examples": "logging channel 1234567\nlogging channel #channel(mention)"},
+        extras={
+            "Examples": "logging channel 1234567\nlogging channel #channel(mention)"
+        },
     )
     async def logging_channel(
         self, ctx: commands.Context, channel: Union[discord.TextChannel, int]
     ):
         channel_id = (
-            channel.id if type(channel) is discord.TextChannel else int(channel)
+            channel.id if isinstance(channel, discord.TextChannel) else int(channel)
         )
 
         guild = await Guild.from_context(ctx)
@@ -229,7 +225,9 @@ class Logging(
         name="set",
         aliases=["add"],
         description="Set Which Events Should Be Logged",
-        extras={"Examples": "`logging set message_edited True`\n`logging set message_edited on`\n\n**All Possible Sets**\n`message_edited`\n`message_deleted`\n`nickname_changed`\n`member_updated`\n`member_banned`\n`member_unbanned`\n`member_joined`\n`member_left`\n`role_created`\n`role_updated`\n`role_deleted`\n`member_roles_changed`\n`member_joined_voice_channel`\n`member_left_voice_channel`\n`server_edit`\n`server_emojis_updated`\n`channel_created`\n`channel_updated`\n`channel_deleted`"},
+        extras={
+            "Examples": "`logging set message_edited True`\n`logging set message_edited on`\n\n**All Possible Sets**\n`message_edited`\n`message_deleted`\n`nickname_changed`\n`member_updated`\n`member_banned`\n`member_unbanned`\n`member_joined`\n`member_left`\n`role_created`\n`role_updated`\n`role_deleted`\n`member_roles_changed`\n`member_joined_voice_channel`\n`member_left_voice_channel`\n`server_edit`\n`server_emojis_updated`\n`channel_created`\n`channel_updated`\n`channel_deleted`"
+        },
     )
     async def logging_set(
         self,
@@ -262,7 +260,9 @@ class Logging(
     @logging.command(
         name="ignore",
         description="Set Channels To Be Ignored From Logging",
-        extras={"Examples": "`logging ignore #mychannel`\n`logging ignore #mychannel1 #mychannel2 #mychannel3`"},
+        extras={
+            "Examples": "`logging ignore #mychannel`\n`logging ignore #mychannel1 #mychannel2 #mychannel3`"
+        },
     )
     async def logging_ignore(
         self, ctx: commands.Context, channels: Greedy[discord.TextChannel]
@@ -306,22 +306,20 @@ class Logging(
         await ctx.message.add_reaction(Emoji.CHECKMARK)
 
     @commands.Cog.listener()
-    async def on_message_edit(
-        self, before: discord.Message, after: discord.Message
-    ):
+    async def on_message_edit(self, before: discord.Message, after: discord.Message):
 
         logging = await self.get_logging_model(guild_id=before.guild.id)
 
         if (
             logging.message_edited is True
-            and logging.enabled != False
+            and logging.enabled
             and logging.channel_id is not None
         ):
 
             member = before.author
 
             if member.bot:
-                if logging.log_actions_by_bots == False:
+                if not logging.log_actions_by_bots:
                     pass
                 else:
                     return
@@ -350,14 +348,14 @@ class Logging(
 
         if (
             logging.message_deleted is True
-            and logging.enabled != False
+            and logging.enabled
             and logging.channel_id is not None
         ):
 
             member = message.author
 
             if member.bot:
-                if logging.log_actions_by_bots == False:
+                if not logging.log_actions_by_bots:
                     pass
                 else:
                     return
@@ -387,12 +385,12 @@ class Logging(
 
         if (
             logging.member_joined is True
-            and logging.enabled != False
+            and logging.enabled
             and logging.channel_id is not None
         ):
 
             if member.bot:
-                if logging.log_actions_by_bots == False:
+                if not logging.log_actions_by_bots:
                     pass
                 else:
                     return
@@ -422,7 +420,7 @@ class Logging(
         ):
 
             if member.bot:
-                if logging.log_actions_by_bots == False:
+                if not logging.log_actions_by_bots:
                     pass
                 else:
                     return
@@ -449,18 +447,19 @@ class Logging(
 
         return
 
-        # FIXME: cannot get guild because discord.User has no guild, patch soon.
+        # FIXME: cannot get guild because discord.User has no guild, patch
+        # soon.
 
         logging = await self.get_logging_model(before.guild.id)
 
         if (
             logging.member_updated is True
-            and logging.enabled != False
+            and logging.enabled
             and logging.channel_id is not None
         ):
 
             if before.bot:
-                if logging.log_actions_by_bots == False:
+                if not logging.log_actions_by_bots:
                     pass
                 else:
                     return
@@ -516,20 +515,18 @@ class Logging(
             return
 
     @commands.Cog.listener()
-    async def on_member_update(
-        self, before: discord.Member, after: discord.Member
-    ):
+    async def on_member_update(self, before: discord.Member, after: discord.Member):
 
         logging = await self.get_logging_model(before.guild.id)
 
         if (
             logging.member_updated is True
-            and logging.enabled != False
+            and logging.enabled
             and logging.channel_id is not None
         ):
 
             if before.bot:
-                if logging.log_actions_by_bots == False:
+                if not logging.log_actions_by_bots:
                     pass
                 else:
                     return
@@ -560,9 +557,7 @@ class Logging(
                 mentions = [role.mention for role in before.roles]
                 OldRoles = mentions[1:]
 
-                newRole = next(
-                    role for role in after.roles if role not in before.roles
-                )
+                newRole = next(role for role in after.roles if role not in before.roles)
 
                 embed.add_field(name="Old Roles", value=f"{OldRoles}")
                 embed.add_field(name="New Role", value=newRole.mention)
@@ -575,12 +570,12 @@ class Logging(
 
         if (
             logging.member_banned is True
-            and logging.enabled != False
+            and logging.enabled
             and logging.channel_id is not None
         ):
 
             if user.bot:
-                if logging.log_actions_by_bots == False:
+                if not logging.log_actions_by_bots:
                     pass
                 else:
                     return
@@ -602,12 +597,12 @@ class Logging(
 
         if (
             logging.member_unbanned is True
-            and logging.enabled != False
+            and logging.enabled
             and logging.channel_id is not None
         ):
 
             if user.bot:
-                if logging.log_actions_by_bots == False:
+                if not logging.log_actions_by_bots:
                     pass
                 else:
                     return
@@ -630,19 +625,17 @@ class Logging(
 
         if (
             logging.role_created is True
-            and logging.enabled != False
+            and logging.enabled
             and logging.channel_id is not None
         ):
 
             embed = discord.Embed(
                 color=Colors.DEFAULT,
-                description=f"Role: **{role.name}** Created\n\n{Chars.ARROW} **Name:** {role.mention}\n{Chars.ARROW} **Color:** {role.color}\n{Chars.ARROW} **Hoisted:** {role.hoist}\n{Chars.ARROW} **Mentionable:** {role.mentionable}",
+                description=f"Role: **{role.name}** Created\n\n{Char.ARROW} **Name:** {role.mention}\n{Char.ARROW} **Color:** {role.color}\n{Char.ARROW} **Hoisted:** {role.hoist}\n{Char.ARROW} **Mentionable:** {role.mentionable}",
             )
             embed.set_thumbnail(url=role.guild.icon.url)
             embed.set_author(name=role.guild.name, icon_url=role.guild.icon.url)
-            embed.set_footer(
-                text=f"ID: {role.id}", icon_url=role.guild.icon.url
-            )
+            embed.set_footer(text=f"ID: {role.id}", icon_url=role.guild.icon.url)
 
             log_channel = await self.get_logs_channel(role.guild.id)
 
@@ -655,47 +648,39 @@ class Logging(
 
         if (
             logging.role_created is True
-            and logging.enabled != False
+            and logging.enabled
             and logging.channel_id is not None
         ):
 
             embed = discord.Embed(
                 color=Colors.DEFAULT,
-                description=f"Role: **{role.name}** Deleted\n\n{Chars.ARROW} **Name:** {role.mention}\n{Chars.ARROW} **Color:** {role.color}\n{Chars.ARROW} **Hoisted:** {role.hoist}\n{Chars.ARROW} **Mentionable:** {role.mentionable}",
+                description=f"Role: **{role.name}** Deleted\n\n{Char.ARROW} **Name:** {role.mention}\n{Char.ARROW} **Color:** {role.color}\n{Char.ARROW} **Hoisted:** {role.hoist}\n{Char.ARROW} **Mentionable:** {role.mentionable}",
             )
             embed.set_thumbnail(url=role.guild.icon.url)
             embed.set_author(name=role.guild.name, icon_url=role.guild.icon.url)
-            embed.set_footer(
-                text=f"ID: {role.id}", icon_url=role.guild.icon.url
-            )
+            embed.set_footer(text=f"ID: {role.id}", icon_url=role.guild.icon.url)
 
             log_channel = await self.get_logs_channel(role.guild.id)
 
             await log_channel.send(embed=embed)
 
     @commands.Cog.listener()
-    async def on_guild_role_update(
-        self, before: discord.Role, after: discord.Role
-    ):
+    async def on_guild_role_update(self, before: discord.Role, after: discord.Role):
         logging = await self.get_logging_model(before.guild.id)
 
         if (
             logging.role_updated is True
-            and logging.enabled != False
+            and logging.enabled
             and logging.channel_id is not None
         ):
 
             embed = discord.Embed(
                 color=Colors.DEFAULT,
-                description=f"Role: **{before.name}** Updated\n\n{Chars.ARROW} **Name:** {before.mention} -> {after.mention}\n{Chars.ARROW} **Color:** `{before.color}` -> `{after.color}`\n{Chars.ARROW} **Hoisted:** `{before.hoist}` -> `{after.hoist}`\n{Chars.ARROW} **Mentionable:** `{before.mentionable}` -> `{after.mentionable}`",
+                description=f"Role: **{before.name}** Updated\n\n{Char.ARROW} **Name:** {before.mention} -> {after.mention}\n{Char.ARROW} **Color:** `{before.color}` -> `{after.color}`\n{Char.ARROW} **Hoisted:** `{before.hoist}` -> `{after.hoist}`\n{Char.ARROW} **Mentionable:** `{before.mentionable}` -> `{after.mentionable}`",
             )
             embed.set_thumbnail(url=before.guild.icon.url)
-            embed.set_author(
-                name=before.guild.name, icon_url=before.guild.icon.url
-            )
-            embed.set_footer(
-                text=f"ID: {before.id}", icon_url=before.guild.icon.url
-            )
+            embed.set_author(name=before.guild.name, icon_url=before.guild.icon.url)
+            embed.set_footer(text=f"ID: {before.id}", icon_url=before.guild.icon.url)
 
             log_channel = await self.get_logs_channel(before.guild.id)
 
@@ -714,7 +699,7 @@ class Logging(
         if before.channel is None:
             if (
                 logging.member_joined_voice_channel is True
-                and logging.enabled != False
+                and logging.enabled
                 and logging.channel_id is not None
             ):
 
@@ -722,7 +707,7 @@ class Logging(
         elif before.channel is not None:
             if (
                 logging.member_left_voice_channel is True
-                and logging.enabled != False
+                and logging.enabled
                 and logging.channel_id is not None
             ):
 
@@ -731,16 +716,14 @@ class Logging(
             return
 
     @commands.Cog.listener()
-    async def on_guild_update(
-        self, before: discord.Guild, after: discord.Guild
-    ):
+    async def on_guild_update(self, before: discord.Guild, after: discord.Guild):
         return
 
         logging = await self.get_logging_model(before.id)
 
         if (
             logging.server_edited is True
-            and logging.enabled != False
+            and logging.enabled
             and logging.channel_id is not None
         ):
 
@@ -763,7 +746,7 @@ class Logging(
 
         if (
             logging.server_emojis_updated is True
-            and logging.enabled != False
+            and logging.enabled
             and logging.channel_id is not None
         ):
 
@@ -780,7 +763,7 @@ class Logging(
 
         if (
             logging.server_stickers_updated is True
-            and logging.enabled != False
+            and logging.enabled
             and logging.channel_id is not None
         ):
 
@@ -792,7 +775,7 @@ class Logging(
 
         if (
             logging.server_webhooks_updated is True
-            and logging.enabled != False
+            and logging.enabled
             and logging.channel_id is not None
         ):
 
@@ -805,7 +788,7 @@ class Logging(
 
         if (
             logging.channel_created is True
-            and logging.enabled != False
+            and logging.enabled
             and logging.channel_id is not None
         ):
 
@@ -818,7 +801,7 @@ class Logging(
 
         if (
             logging.channel_deleted is True
-            and logging.enabled != False
+            and logging.enabled
             and logging.channel_id is not None
         ):
 
@@ -833,7 +816,7 @@ class Logging(
 
         if (
             logging.channel_updated is True
-            and logging.enabled != False
+            and logging.enabled
             and logging.channel_id is not None
         ):
 
@@ -845,7 +828,7 @@ class Logging(
 
         if (
             logging.invite_created is True
-            and logging.enabled != False
+            and logging.enabled
             and logging.channel_id is not None
         ):
 
@@ -857,49 +840,43 @@ class Logging(
 
         if (
             logging.invite_deleted is True
-            and logging.enabled != False
+            and logging.enabled
             and logging.channel_id is not None
         ):
 
             pass
 
     @commands.Cog.listener()
-    async def on_stage_instance_create(
-        self, stage_instance: discord.StageInstance
-    ):
+    async def on_stage_instance_create(self, stage_instance: discord.StageInstance):
         logging = await self.get_logging_model(stage_instance.guild.id)
 
         if (
             logging.stage_created is True
-            and logging.enabled != False
+            and logging.enabled
             and logging.channel_id is not None
         ):
 
             pass
 
     @commands.Cog.listener()
-    async def on_stage_instance_delete(
-        self, stage_instance: discord.StageInstance
-    ):
+    async def on_stage_instance_delete(self, stage_instance: discord.StageInstance):
         logging = await self.get_logging_model(stage_instance.guild.id)
 
         if (
             logging.stage_deleted is True
-            and logging.enabled != False
+            and logging.enabled
             and logging.channel_id is not None
         ):
 
             pass
 
     @commands.Cog.listener()
-    async def on_stage_instance_update(
-        self, stage_instance: discord.StageInstance
-    ):
+    async def on_stage_instance_update(self, stage_instance: discord.StageInstance):
         logging = await self.get_logging_model(stage_instance.guild.id)
 
         if (
             logging.stage_updated is True
-            and logging.enabled != False
+            and logging.enabled
             and logging.channel_id is not None
         ):
 

@@ -1,11 +1,10 @@
 import discord
 
-
 from helpers.constants import *
 
 
 class Invite(discord.ui.View):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         self.add_item(
@@ -14,18 +13,16 @@ class Invite(discord.ui.View):
 
 
 class SupportServer(discord.ui.View):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         self.add_item(
-            discord.ui.Button(
-                label="Support Server", url=Links.SUPPORT_SERVER_INVITE
-            )
+            discord.ui.Button(label="Support Server", url=Links.SUPPORT_SERVER_INVITE)
         )
 
 
 class Source(discord.ui.View):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         self.add_item(

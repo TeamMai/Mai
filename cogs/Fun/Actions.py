@@ -11,28 +11,24 @@ Made With ❤️ By Ghoul & Nerd
 
 """
 
-import discord
-import aiohttp
 import random
-import nekos
-
 from typing import Optional
 
+import aiohttp
+import discord
+import nekos
 from discord.ext import commands
-from discord.ext.commands import Greedy
-
-from helpers.constants import *
-from helpers.logging import log
-from helpers.custommeta import CustomCog as Cog
+from discord.ext.commands import Bot, BucketType, Greedy
 
 from config.ext.parser import config
+from helpers.constants import *
+from helpers.custommeta import CustomCog as Cog
+from helpers.logging import log
 
 
-class Actions(
-    Cog, name="Actions", description="Fun Commands", emoji=Emoji.INFORMATION
-):
-    def __init__(self, bot: commands.Bot):
-        self.bot = bot
+class Actions(Cog, name="Actions", description="Fun Commands", emoji=Emoji.INFORMATION):
+    def __init__(self, bot: Bot):
+        self.bot: Bot = bot
         self.kawaii_red_token = config["KAWAII_RED_API_TOKEN"]
 
     async def kawaii_request(self, target: str) -> str:
@@ -78,7 +74,9 @@ class Actions(
         )
 
     @commands.command(
-        name="hug", description="Hug Someone Or Yourself", extras={"Examples": "hug @Member1"}
+        name="hug",
+        description="Hug Someone Or Yourself",
+        extras={"Examples": "hug @Member1"},
     )
     @commands.guild_only()
     async def hug(
@@ -98,7 +96,9 @@ class Actions(
         await ctx.send(embed=embed)
 
     @commands.command(
-        name="pat", description="Pat Someone Or Yourself", extras={"Examples": "pat @Member1"}
+        name="pat",
+        description="Pat Someone Or Yourself",
+        extras={"Examples": "pat @Member1"},
     )
     @commands.guild_only()
     async def pat(

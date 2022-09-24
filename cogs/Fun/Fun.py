@@ -11,22 +11,21 @@ Made With ❤️ By Ghoul & Nerd
 
 """
 
-import discord
-import aiohttp
-
-from discord.ext import commands
-
 from typing import Optional, Union
 
-from helpers.constants import *
-from helpers.logging import log
-from helpers.custommeta import CustomCog as Cog
+import aiohttp
+import discord
+from discord.ext import commands
+from discord.ext.commands import Bot, BucketType
 
 from config.ext.parser import config
+from helpers.constants import *
+from helpers.custommeta import CustomCog as Cog
+from helpers.logging import log
 
 
 class Fun(Cog, name="Fun", description="Fun Commands", emoji=Emoji.INFORMATION):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Bot):
         self.bot = bot
         self.HTTP_ERROR_VALID_RANGES = (
             (100, 102),
@@ -49,15 +48,11 @@ class Fun(Cog, name="Fun", description="Fun Commands", emoji=Emoji.INFORMATION):
         extras={"Examples": "httpcat 404\nhttpcat 200"},
     )
     @commands.guild_only()
-    async def httpcat(
-        self, ctx: commands.Context, code: Union[int, str]
-    ) -> None:
+    async def httpcat(self, ctx: commands.Context, code: Union[int, str]) -> None:
 
         title = None
 
-        in_valid_range = any(
-            code in range(*i) for i in self.HTTP_ERROR_VALID_RANGES
-        )
+        in_valid_range = any(code in range(*i) for i in self.HTTP_ERROR_VALID_RANGES)
 
         if code is None:
             code = 400
@@ -99,9 +94,7 @@ class Fun(Cog, name="Fun", description="Fun Commands", emoji=Emoji.INFORMATION):
 
         async with ctx.channel.typing():
             async with aiohttp.ClientSession() as cs:
-                async with cs.get(
-                    url, headers=headers, params=querystring
-                ) as r:
+                async with cs.get(url, headers=headers, params=querystring) as r:
                     data = await r.json()
 
                     try:
@@ -146,9 +139,7 @@ class Fun(Cog, name="Fun", description="Fun Commands", emoji=Emoji.INFORMATION):
         await ctx.send(embed=embed)
 
     @urban.error
-    async def urban_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ):
+    async def urban_error(self, ctx: commands.Context, error: commands.CommandError):
         if isinstance(error, commands.CommandInvokeError):
             embed = discord.Embed(
                 title="😢 There was an error!",

@@ -11,21 +11,18 @@ Made With ❤️ By Ghoul & Nerd
 
 """
 
-import discord
-import aiohttp
-
-
 from typing import Optional
 
+import aiohttp
+import discord
 from discord.ext import commands
-from discord.ext.commands import BucketType
+from discord.ext.commands import Bot, BucketType
 
+from db.models import Counting, Guild
 from helpers.constants import *
-from helpers.logging import log
 from helpers.custommeta import CustomCog as Cog
-
-
-from db.models import Guild, Counting
+from helpers.logging import log
+from helpers.types import *
 
 
 class CountingCog(
@@ -34,8 +31,8 @@ class CountingCog(
     description="Count To A Number, The Right Way!",
     emoji=Emoji.COUNTING,
 ):
-    def __init__(self, bot: commands.Bot):
-        self.bot = bot
+    def __init__(self, bot: Bot):
+        self.bot: Bot = bot
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -47,9 +44,7 @@ class CountingCog(
     @commands.bot_has_permissions(
         manage_channels=True, manage_messages=True, manage_webhooks=True
     )
-    @commands.group(
-        invoke_without_command=True, description="Manage Counting Settings"
-    )
+    @commands.group(invoke_without_command=True, description="Manage Counting Settings")
     @commands.guild_only()
     async def counting(self, ctx: commands.Context) -> None:
 
@@ -102,12 +97,8 @@ class CountingCog(
         embed.add_field(name="Enabled", value=counting.enabled, inline=False)
         embed.add_field(name="Channel", value=channel.mention, inline=False)
         embed.add_field(name="Goal", value=counting.counting_goal, inline=False)
-        embed.add_field(
-            name="Current", value=counting.counting_number, inline=False
-        )
-        embed.set_author(
-            name=self.bot.user.name, icon_url=self.bot.user.avatar.url
-        )
+        embed.add_field(name="Current", value=counting.counting_number, inline=False)
+        embed.set_author(name=self.bot.user.name, icon_url=self.bot.user.avatar.url)
         embed.set_footer(text=f"Requested by {ctx.author}")
 
         await ctx.send(embed=embed)
@@ -121,7 +112,7 @@ class CountingCog(
         self, ctx: commands.Context, toggle: Optional[bool]
     ) -> None:
 
-        if toggle == None:
+        if toggle is None:
             await ctx.send_help(ctx.command)
             return
 
@@ -198,9 +189,7 @@ class CountingCog(
         description="Set A Goal For Counting",
         extras={"Examples": "counting goal 5000"},
     )
-    async def counting_goal(
-        self, ctx: commands.Context, goal: int = None
-    ) -> None:
+    async def counting_goal(self, ctx: commands.Context, goal: int = None) -> None:
 
         if not goal:
             embed = discord.Embed(
@@ -241,9 +230,7 @@ class CountingCog(
 
         if await Counting.exists(guild=guild):
 
-            await Counting.get(guild=guild).update(
-                counting_number=counting_number
-            )
+            await Counting.get(guild=guild).update(counting_number=counting_number)
             embed = discord.Embed(
                 description=f"Counting has started from base of `{counting_number}`.",
                 color=Colors.DEFAULT,
@@ -258,7 +245,9 @@ class CountingCog(
             await ctx.send_help(self.counting_channel)
 
     @counting.command(
-        name="reset", description="Reset Counting Back To 0", extras={"Examples": "counting 0"}
+        name="reset",
+        description="Reset Counting Back To 0",
+        extras={"Examples": "counting 0"},
     )
     async def counting_reset(self, ctx):
 
@@ -313,9 +302,7 @@ class CountingCog(
         if not message.guild:
             return
 
-        counting = await Counting.get_or_none(
-            guild__discord_id=message.guild.id
-        )
+        counting = await Counting.get_or_none(guild__discord_id=message.guild.id)
 
         if not counting:
             return
@@ -346,9 +333,7 @@ class CountingCog(
         if sent_number == counting.next_number:
             await counting.increment()
             counting.last_member_id = message.author.id
-            await counting.save(
-                update_fields=["last_member_id", "counting_number"]
-            )
+            await counting.save(update_fields=["last_member_id", "counting_number"])
 
             async with aiohttp.ClientSession() as session:
                 webhook = discord.Webhook.from_url(

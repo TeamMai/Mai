@@ -11,19 +11,19 @@ Made With ❤️ By Ghoul & Nerd
 
 """
 
-import discord
 import traceback
-
 from typing import Union
-from discord.ext import commands
-from discord.ext.commands import BucketType
 
-from helpers.constants import *
-from helpers.logging import log
-from helpers.cache.reddit import RedditPostCacher
-from helpers.custommeta import CustomCog as Cog
+import discord
+from discord.ext import commands
+from discord.ext.commands import Bot, BucketType
 
 from db.models import Guild
+from helpers.cache.reddit import RedditPostCacher
+from helpers.constants import *
+from helpers.custommeta import CustomCog as Cog
+from helpers.logging import log
+from helpers.types import *
 
 
 class NSFW(
@@ -32,8 +32,8 @@ class NSFW(
     description="NSFW(Not Safe For Work) Commands :smirk:",
     emoji=Emoji.NSFW,
 ):
-    def __init__(self, bot: commands.Bot):
-        self.bot = bot
+    def __init__(self, bot: Bot) -> None:
+        self.bot: Bot = bot
         self.subreddits = (
             "ass",
             "LegalTeens",
@@ -44,20 +44,18 @@ class NSFW(
             "cumsluts",
             "hentai",
         )
-        self.cache = RedditPostCacher(
+        self.cache: RedditPostCacher = RedditPostCacher(
             self.subreddits, "./cogs/NSFW/cache/NSFW.pickle"
         )
         self.cache.cache_posts.start()
 
     @commands.Cog.listener()
-    async def on_ready(self):
+    async def on_ready(self) -> None:
         log.info(
             f"[bright_green][EXTENSION][/bright_green][blue3] {type(self).__name__} READY[/blue3]"
         )
 
-    async def _reddit_sender(
-        self, ctx: commands.Context, subrd: str, title: str
-    ):
+    async def _reddit_sender(self, ctx: commands.Context, subrd: str, title: str):
         """Fetches from reddit and sends results
         Parameters
         ----------
@@ -91,7 +89,7 @@ class NSFW(
     @commands.Cog.listener()
     async def on_command_error(
         self, ctx: commands.Context, error: commands.CommandError
-    ):
+    ) -> None:
         if isinstance(error, commands.NSFWChannelRequired):
             embed = discord.Embed(
                 title="NSFW not allowed here",
@@ -103,25 +101,33 @@ class NSFW(
         else:
             traceback.print_exception(type(error), error, error.__traceback__)
 
-    @commands.command(name="ass", description="Ass Pictures", extras={"Examples": "ass"})
+    @commands.command(
+        name="ass", description="Ass Pictures", extras={"Examples": "ass"}
+    )
     @commands.guild_only()
     @commands.is_nsfw()
     async def ass(self, ctx: commands.Context) -> None:
         await self._reddit_sender(ctx, "ass", "DRUMS")
 
-    @commands.command(name="teen", description="Legal Teenagers", extras={"Examples": "teen"})
+    @commands.command(
+        name="teen", description="Legal Teenagers", extras={"Examples": "teen"}
+    )
     @commands.guild_only()
     @commands.is_nsfw()
     async def teen(self, ctx: commands.Context) -> None:
         await self._reddit_sender(ctx, "LegalTeens", "You like them young?")
 
-    @commands.command(name="boobs", description="Boob Pictures", extras={"Examples": "boobs"})
+    @commands.command(
+        name="boobs", description="Boob Pictures", extras={"Examples": "boobs"}
+    )
     @commands.guild_only()
     @commands.is_nsfw()
     async def boobs(self, ctx: commands.Context) -> None:
         await self._reddit_sender(ctx, "boobs", "Bounce! Bounce!")
 
-    @commands.command(name="pussy", description="Pussy Pictures", extras={"Examples": "pussy"})
+    @commands.command(
+        name="pussy", description="Pussy Pictures", extras={"Examples": "pussy"}
+    )
     @commands.guild_only()
     @commands.is_nsfw()
     async def pussy(self, ctx: commands.Context) -> None:
@@ -137,7 +143,9 @@ class NSFW(
             ctx, "TooCuteForPorn", "Too cute for porn, aren't they?"
         )
 
-    @commands.command(name="nudes", description="nude pictures", extras={"Examples": "nudes"})
+    @commands.command(
+        name="nudes", description="nude pictures", extras={"Examples": "nudes"}
+    )
     @commands.guild_only()
     @commands.is_nsfw()
     async def nudes(self, ctx: commands.Context) -> None:
@@ -152,9 +160,7 @@ class NSFW(
     @commands.guild_only()
     @commands.is_nsfw()
     async def cum(self, ctx: commands.Context) -> None:
-        await self._reddit_sender(
-            ctx, "cumsluts", "And they don't stop cumming!"
-        )
+        await self._reddit_sender(ctx, "cumsluts", "And they don't stop cumming!")
 
     @commands.command(
         name="hentai", description="Hentai Pictures", extras={"Examples": "hentai"}
@@ -177,14 +183,16 @@ class NSFW(
     @nsfw.command(
         name="toggle",
         description="Toggle NSFW On/Off",
-        extras={"Examples": "nsfw toggle on\nnsfw toggle off\nnsfw toggle True\nnsfw toggle False"},
+        extras={
+            "Examples": "nsfw toggle on\nnsfw toggle off\nnsfw toggle True\nnsfw toggle False"
+        },
     )
     async def nsfw_toggle(
         self, ctx: commands.Context, toggle: Union[bool, str]
     ) -> None:
-        guild = await Guild.get_or_none(discord_id=ctx.guild.id)
+        guild: Guild = await Guild.get_or_none(discord_id=ctx.guild.id)
 
-        if type(toggle) is str:
+        if isinstance(toggle, str):
             if toggle == "on":
                 toggle = True
             elif toggle == "off":
@@ -209,5 +217,5 @@ class NSFW(
         await ctx.send(embed=embed)
 
 
-def setup(bot):
+def setup(bot) -> None:
     bot.add_cog(NSFW(bot))

@@ -11,21 +11,19 @@ Made With ❤️ By Ghoul & Nerd
 
 """
 
-import discord
 import datetime
-import PycordUtils
-
 from typing import Optional, Union
+
+import discord
+import PycordUtils
 from discord.ext import commands
 from discord.ext.commands import BucketType
-
-from helpers.constants import *
-from helpers.logging import log
-from helpers.custommeta import CustomCog as Cog
-
 from tortoise.expressions import F
 
 from db.models import Guild, Invite
+from helpers.constants import *
+from helpers.custommeta import CustomCog as Cog
+from helpers.logging import log
 
 
 class Invites(
@@ -34,7 +32,7 @@ class Invites(
     description="See Who Really Invited Who.",
     emoji=Emoji.LINK,
 ):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Bot):
         self.bot = bot
         self.tracker = PycordUtils.InviteTracker(bot)
 
@@ -90,9 +88,7 @@ class Invites(
         invite_log_channel_id = record.channel_id
 
         if invite_log_channel_id is None:
-            mai_category = await member.guild.create_category_channel(
-                name="Mai"
-            )
+            mai_category = await member.guild.create_category_channel(name="Mai")
             invite_channel = await member.guild.create_text_channel(
                 name="invite-logs",
                 reason="[MAI] Created Because Invite Channel is not saved in the DB",
@@ -145,9 +141,7 @@ class Invites(
             return
 
         guild = (await Guild.get_or_create(discord_id=ctx.guild.id))[0]
-        invite_user = (
-            await Invite.get_or_create(inviter_id=member.id, guild=guild)
-        )[0]
+        invite_user = (await Invite.get_or_create(inviter_id=member.id, guild=guild))[0]
 
         invites_total = invite_user.invite_count_total
         invites_bonus = invite_user.invite_count_bonus
@@ -215,9 +209,7 @@ class Invites(
 
     @commands.has_guild_permissions(manage_guild=True)
     @settings.command(name="accountage")
-    async def invites_setaccountage(
-        self, ctx: commands.Context, age: int
-    ) -> None:
+    async def invites_setaccountage(self, ctx: commands.Context, age: int) -> None:
         pass
 
     @commands.has_guild_permissions(manage_guild=True)

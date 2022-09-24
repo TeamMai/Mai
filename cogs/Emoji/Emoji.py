@@ -11,39 +11,26 @@ Made With ❤️ By Ghoul & Nerd
 
 """
 
-import discord
 import re
-
-
-from discord import (
-    PartialEmoji,
-    Embed,
-    Color,
-    Message,
-    PartialEmoji,
-    HTTPException,
-)
-
+from asyncio import Event
 from typing import Set
 
+import discord
+from discord import Color, Embed, HTTPException, Message, PartialEmoji
 from discord.ext import commands
-from discord.ext.commands import Greedy, BucketType
+from discord.ext.commands import Bot, BucketType, Greedy
 
 from helpers.constants import *
-from helpers.logging import log
 from helpers.custommeta import CustomCog as Cog
-
-from asyncio import Event
+from helpers.logging import log
 
 
 class Emojis(
     Cog, name="Emoji", description="Helpful Emoji Utilities", emoji=Emoji.IMAGE
 ):
-    def __init__(self, bot: commands.Bot):
-        self.bot = bot
-        self.emoji_extraction_pattern = re.compile(
-            r"<(a?):([a-zA-Z0-9\_]+):([0-9]+)>"
-        )
+    def __init__(self, bot: Bot):
+        self.bot: Bot = bot
+        self.emoji_extraction_pattern = re.compile(r"<(a?):([a-zA-Z0-9\_]+):([0-9]+)>")
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -56,14 +43,10 @@ class Emojis(
         if ctx.invoked_subcommand is None:
             await self.bot.send_help(ctx.command)
 
-    async def extract_emoji_from_messages(
-        self, messages: discord.Message
-    ) -> Set:
+    async def extract_emoji_from_messages(self, messages: discord.Message) -> Set:
         parsed_emoji = set()
         for message in messages:
-            for match in self.emoji_extraction_pattern.finditer(
-                message.content
-            ):
+            for match in self.emoji_extraction_pattern.finditer(message.content):
                 animated = bool(match.group(1))
                 name = match.group(2)
                 emoji_id = int(match.group(3))
@@ -117,9 +100,7 @@ class Emojis(
             limit_reached = Event()
             for emoji in filter(lambda e: e.is_custom_emoji(), emojis):
                 try:
-                    created_emoji = await self.copy_emoji_to_guild(
-                        emoji, ctx.guild
-                    )
+                    created_emoji = await self.copy_emoji_to_guild(emoji, ctx.guild)
                     added_emoji.add(created_emoji)
                 except HTTPException:
                     limit_reached.set()
@@ -144,9 +125,7 @@ class Emojis(
             )
         else:
             messages_given = bool(messages)
-            error_message = (
-                "message(s) given" if messages_given else "last 10 messages"
-            )
+            error_message = "message(s) given" if messages_given else "last 10 messages"
             summary = Embed(
                 title="No emoji found 😔",
                 description=f"No emoji were found in the {error_message}",
@@ -180,9 +159,7 @@ class Emojis(
     async def emoji_export(self, ctx: commands.Context) -> None:
         pass
 
-    @emote.command(
-        name="import", description="Import Emojis From A Zip/Tar File"
-    )
+    @emote.command(name="import", description="Import Emojis From A Zip/Tar File")
     async def emoji_import(self, ctx: commands.Context) -> None:
         pass
 

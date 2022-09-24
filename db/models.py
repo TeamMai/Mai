@@ -14,53 +14,50 @@ Made With ❤️ By Ghoul & Nerd
 import asyncio
 
 import aioredis
-from config.ext.parser import config
 from discord import Guild as GuildModel
 from discord.ext.commands import Context
 from tortoise import fields
 from tortoise.expressions import F
 from tortoise.models import Model
 
+from config.ext.parser import config
+
 aioredis.util._converters[bool] = lambda x: b"1" if x else b"0"
 redis: aioredis.Redis
 
 
-async def connect_redis():
+async def connect_redis() -> None:
     global redis
 
-    redis = aioredis.Redis(
-        await aioredis.create_connection(config["REDIS_URI"])
-    )
+    redis = aioredis.Redis(await aioredis.create_connection(config["REDIS_URI"]))
 
 
 asyncio.ensure_future(connect_redis())
 
 
-def from_redis_hash(cls, hashmap: dict):
+def from_redis_hash(cls, hashmap: dict) -> dict:
     return {
-        k: v == "1"
-        if isinstance(cls._meta.fields_map[k], fields.BooleanField)
-        else v
+        k: v == "1" if isinstance(cls._meta.fields_map[k], fields.BooleanField) else v
         for k, v in hashmap.items()
     }
 
 
-def redis_hashmap(instance):
+def redis_hashmap(instance) -> dict:
     return {
         k: getattr(instance, k)
         for k in instance._meta.db_fields
-        if getattr(instance, k) != None
+        if getattr(instance, k) is not None
     }
 
 
-async def c_save(obj, update_fields=[]):
+async def c_save(obj, update_fields=[]) -> None:
     redis_hashmap(obj)
     await asyncio.wait([c(obj) for c in obj.__cache_updaters])
     await obj.save(update_fields=update_fields)
 
 
 def cached_model(*, key: str):
-    def predicate(cls: type):
+    def predicate(cls: type) -> type:
         nonlocal key
 
         if not hasattr(cls, "__cache_updaters"):
@@ -71,9 +68,7 @@ def cached_model(*, key: str):
             if cached:
                 return cls(**from_redis_hash(cls, cached)), False
 
-            obj, created = await cls.get_or_create(
-                **{key: cached_key}, **kwargs
-            )
+            obj, created = await cls.get_or_create(**{key: cached_key}, **kwargs)
             await c_update_cache(obj)
             return obj, created
 
@@ -101,14 +96,14 @@ def cached_model(*, key: str):
                 f"{cls.__name__};{key};{value}", encoding="utf-8"
             )
 
-        async def c_update_cache(obj):
+        async def c_update_cache(obj) -> None:
             await redis.hmset_dict(
                 f"{cls.__name__};{key};{getattr(obj, key)}", redis_hashmap(obj)
             )
 
         cls.__cache_updaters.append(c_update_cache)
 
-        cleankey = key.replace("__", "_")
+        cleankey: str = key.replace("__", "_")
 
         # Internal methods added for possible use cases
         setattr(cls, "c_update_cache_by_" + cleankey, c_update_cache)
@@ -118,9 +113,7 @@ def cached_model(*, key: str):
         setattr(cls, "c_save", c_save)
 
         # The classmethods
-        setattr(
-            cls, "c_get_or_create_by_" + cleankey, classmethod(c_get_or_create)
-        )
+        setattr(cls, "c_get_or_create_by_" + cleankey, classmethod(c_get_or_create))
         setattr(cls, "c_get_or_none_by_" + cleankey, classmethod(c_get_or_none))
         setattr(cls, "c_get_by_" + cleankey, classmethod(c_get))
         return cls
@@ -216,9 +209,8 @@ class Captcha(Model):
     id = fields.BigIntField(pk=True)
     enabled = fields.BooleanField(default=False)
     guild = fields.ForeignKeyField("Mai.Guild", related_name="Captcha")
-    type = fields.TextField(
-        default="text"
-    )  # Types: Audio, Text, Picture, Arithmetic
+    # Types: Audio, Text, Picture, Arithmetic
+    type = fields.TextField(default="text")
 
 
 class Warns(Model):
@@ -252,7 +244,8 @@ class Counting(Model):
 
     @property
     def next_number(self) -> int:
-        return self.counting_number + 1
+        next_number = self.counting_number + 1
+        return next_number  # type: ignore
 
 
 class ServerLogging(Model):
@@ -325,9 +318,7 @@ class Users(Model):
     user_id = fields.BigIntField(pk=True)
     commands_run = fields.BigIntField(default=0, null=True)
     tracking_enabled = fields.BooleanField(default=True)
-    api_key = fields.ForeignKeyField(
-        "Mai.Keys", related_name="Users", null=True
-    )
+    api_key = fields.ForeignKeyField("Mai.Keys", related_name="Users", null=True)
 
     async def increment(self, increase_no: int = 1):
         self.commands_run = F("commands_run") + increase_no
@@ -339,6 +330,5 @@ class Users(Model):
 class Keys(Model):
     key_id = fields.UUIDField(pk=True)
     enabled = fields.BooleanField(default=False)
-    level = fields.TextField(
-        default="0"
-    )  # 0 = Normal | 1 = Premium | 2 = Bot Owner
+    # 0 = Normal | 1 = Premium | 2 = Bot Owner
+    level = fields.TextField(default="0")

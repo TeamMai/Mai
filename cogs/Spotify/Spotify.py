@@ -11,15 +11,16 @@ Made With ❤️ By Ghoul & Nerd
 
 """
 
-import discord
-
 from typing import Optional
+
+import discord
 from discord.ext import commands
+from discord.ext.commands import Bot, BucketType
 
 from helpers.constants import *
-from helpers.logging import log
-
 from helpers.custommeta import CustomCog as Cog
+from helpers.logging import log
+from helpers.types import *
 
 
 class Spotify(
@@ -28,11 +29,11 @@ class Spotify(
     description="Get Spotify Information",
     emoji=Emoji.SPOTIFY,
 ):
-    def __init__(self, bot: commands.Bot):
-        self.bot = bot
+    def __init__(self, bot: Bot) -> None:
+        self.bot: Bot = bot
 
     @commands.Cog.listener()
-    async def on_ready(self):
+    async def on_ready(self) -> None:
         log.info(
             f"[bright_green][EXTENSION][/bright_green][blue3] {type(self).__name__} READY[/blue3]"
         )
@@ -46,7 +47,7 @@ class Spotify(
         self, ctx: commands.Context, member: Optional[discord.Member]
     ) -> None:
         if member is None:
-            member = ctx.author
+            member: MEMBER | None = ctx.author
 
         async with ctx.channel.typing():
             spotify = discord.utils.find(
@@ -68,5 +69,5 @@ class Spotify(
             )
 
 
-def setup(bot):
+def setup(bot) -> None:
     bot.add_cog(Spotify(bot))

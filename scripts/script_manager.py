@@ -15,8 +15,9 @@ import os
 import subprocess
 import sys
 
-from helpers.console import console
 from InquirerPy import inquirer
+
+from helpers.console import console
 
 WINDOW_TITLE = "[Mai] - Script Manager"
 
@@ -66,15 +67,13 @@ if terminal == "CMD/Powershell":
         ],
     ).execute()
 
-    console.print(
-        f"[blue3]> [red]{script}.bat[/red] Was Chosen, Executing...[/blue3]"
-    )
+    console.print(f"[blue3]> [red]{script}.bat[/red] Was Chosen, Executing...[/blue3]")
 
-    ROOT_DIR = os.path.abspath(os.curdir)
+    ROOT_DIR: str = os.path.abspath(os.curdir)
 
     WIN32_DIR = "win32"
 
-    WINDOWS_SCRIPTS_DIR = os.path.join(ROOT_DIR, WIN32_DIR)
+    WINDOWS_SCRIPTS_DIR: str = os.path.join(ROOT_DIR, WIN32_DIR)
 
     subprocess.Popen([script], cwd=WINDOWS_SCRIPTS_DIR, shell=True)
 
@@ -95,11 +94,11 @@ elif terminal == "Bash":
         f"\n[blue3]> [red]{script}.bat[/red] Was Chosen, Executing...[/blue3]"
     )
 
-    ROOT_DIR = os.path.abspath(os.curdir)
+    ROOT_DIR: str = os.path.abspath(os.curdir)
 
     LINUX_DIR = "linux"
 
-    BASH_SCRIPTS_DIR = os.path.join(ROOT_DIR, LINUX_DIR)
+    BASH_SCRIPTS_DIR: str = os.path.join(ROOT_DIR, LINUX_DIR)
 
     subprocess.Popen([f"./{script}.sh"], cwd=BASH_SCRIPTS_DIR, shell=True)
 else:

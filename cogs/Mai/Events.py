@@ -11,24 +11,24 @@ Made With ❤️ By Ghoul & Nerd
 
 """
 
-import discord
 import datetime
-
 from typing import Union
-from discord.ext import commands
 
+import discord
+from discord.ext import commands
+from discord.ext.commands import Bot, BucketType
+
+from db.models import Guild, GuildEvent, ServerLogging
 from helpers.constants import *
 from helpers.logging import log
 
-from db.models import Guild, GuildEvent, ServerLogging
-
 
 class Events(commands.Cog, command_attrs=dict(hidden=True)):
-    def __init__(self, bot: commands.Bot):
-        self.bot = bot
+    def __init__(self, bot: Bot) -> None:
+        self.bot: Bot = bot
 
     @commands.Cog.listener()
-    async def on_ready(self):
+    async def on_ready(self) -> None:
         log.info(
             f"[bright_green][EXTENSION][/bright_green][blue3] {type(self).__name__} READY[/blue3]"
         )
@@ -42,7 +42,7 @@ class Events(commands.Cog, command_attrs=dict(hidden=True)):
         new_prefix: str,
         timestamp,
     ) -> None:
-        guild = (await Guild.get_or_create(discord_id=guild.id))[0]
+        guild: Guild = (await Guild.get_or_create(discord_id=guild.id))[0]
 
         await GuildEvent.create(
             guild=guild,
@@ -63,7 +63,7 @@ class Events(commands.Cog, command_attrs=dict(hidden=True)):
     ) -> None:
         _guild = await Guild.get_or_none(discord_id=guild.id)
 
-        logging = await ServerLogging.get_or_none(guild=_guild)
+        logging: ServerLogging | None = await ServerLogging.get_or_none(guild=_guild)
 
         channel_id = logging.channel_id
 
@@ -79,9 +79,7 @@ class Events(commands.Cog, command_attrs=dict(hidden=True)):
         embed.add_field(name="Moderator", value=warner.mention)
         embed.add_field(name="Reason", value=reason)
         embed.add_field(name="Warn ID", value=f"`{warn_id}`", inline=False)
-        embed.set_footer(
-            icon_url=warner.avatar.url, text=f"Mod ID: {warner.id}"
-        )
+        embed.set_footer(icon_url=warner.avatar.url, text=f"Mod ID: {warner.id}")
         await channel.send(embed=embed)
 
     @commands.Cog.listener()
@@ -93,13 +91,13 @@ class Events(commands.Cog, command_attrs=dict(hidden=True)):
     ) -> None:
         _guild = await Guild.get_or_none(discord_id=guild.id)
 
-        logging = await ServerLogging.get_or_none(guild=_guild)
+        logging: ServerLogging | None = await ServerLogging.get_or_none(guild=_guild)
 
         channel_id = logging.channel_id
 
         channel = self.bot.get_channel(channel_id)
 
-        warned = await self.bot.get_or_fetch_user(warned)
+        warned: str | int = await self.bot.get_or_fetch_user(warned)
 
         embed = discord.Embed(
             color=Colors.DEFAULT,
@@ -109,11 +107,9 @@ class Events(commands.Cog, command_attrs=dict(hidden=True)):
         embed.set_author(name=warned.name, icon_url=warned.avatar.url)
         embed.set_thumbnail(url=guild.icon.url)
         embed.add_field(name="Moderator", value=warner.mention)
-        embed.set_footer(
-            icon_url=warner.avatar.url, text=f"Mod ID: {warner.id}"
-        )
+        embed.set_footer(icon_url=warner.avatar.url, text=f"Mod ID: {warner.id}")
         await channel.send(embed=embed)
 
 
-def setup(bot):
+def setup(bot) -> None:
     bot.add_cog(Events(bot))

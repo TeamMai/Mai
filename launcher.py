@@ -22,26 +22,19 @@ import cpuinfo
 import humanize
 import psutil
 import yaml
-
 from download import download
 from halo import Halo
 from InquirerPy import inquirer
 
-
-from helpers import ASCII
-
 from config.ext.parser import config
-
+from helpers import ASCII
 from helpers.console import console
 from helpers.constants import ConfigMapping
-
 
 console.print(
     "[red]-----------------------------------------------------------------[/red"
 )
-raise DeprecationWarning(
-    "[MAI] THIS LAUNCHER IS DEPRECATED AND SHOULD NOT BE USED"
-)
+raise DeprecationWarning("[MAI] THIS LAUNCHER IS DEPRECATED AND SHOULD NOT BE USED")
 console.print(
     "[red]-----------------------------------------------------------------[/red"
 )
@@ -104,12 +97,8 @@ console.print(
 )
 
 console.print(f"[blue3]OS[/blue3]: [purple]{platform.uname().system}[/purple]")
-console.print(
-    f"[blue3]OS Version[/blue3]: [purple]{platform.uname().version}[/purple]"
-)
-console.print(
-    f"[blue3]Release[/blue3]: [purple]{platform.uname().release}[/purple]"
-)
+console.print(f"[blue3]OS Version[/blue3]: [purple]{platform.uname().version}[/purple]")
+console.print(f"[blue3]Release[/blue3]: [purple]{platform.uname().release}[/purple]")
 console.print(
     f"[blue3]Processor[/blue3]: [purple]{platform.uname().processor}[/purple]"
 )
@@ -126,7 +115,7 @@ console.print(
 
 run_extra_sys_info = config["RUN_LAUNCHER_WITH_EXTRA_SYS_INFO"]
 
-if run_extra_sys_info == True:
+if run_extra_sys_info:
     cpu_info = cpuinfo.get_cpu_info()
 
     cpu_name = cpu_info["brand_raw"]
@@ -134,9 +123,7 @@ if run_extra_sys_info == True:
     cpu_cores = cpu_info["count"]
 
     console.print(f"[blue3]CPU[/blue3]: [purple]{cpu_name}[/purple]")
-    console.print(
-        f"[blue3]Processor Type[/blue3]: [purple]{processor_type}[/purple]"
-    )
+    console.print(f"[blue3]Processor Type[/blue3]: [purple]{processor_type}[/purple]")
     console.print(f"[blue3]CPU Cores[/blue3]: [purple]{cpu_cores}[/purple]")
     console.print(
         f"[blue3]CPU Percentage[/blue3]: [purple]{psutil.cpu_percent()}%[/purple]"
@@ -223,9 +210,7 @@ if not os.path.exists("config/config.yaml"):
         console.print("[blue3]> CONFIG DATA DUMPED.[/blue3]")
         time.sleep(1)
 else:
-    console.print(
-        "[blue3]> Config File: [purple]config/config.yaml[/purple][/blue3]"
-    )
+    console.print("[blue3]> Config File: [purple]config/config.yaml[/purple][/blue3]")
 
 console.print(
     "[blue3]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[/blue3]"
@@ -345,9 +330,7 @@ if not redis_running:
         else:
             WaitAndExit("> An Unexpected Error Occurred.")
     else:
-        console.print(
-            "[blue3]> FOUND DEFAULT_REDIS_PATH FROM CONFIG.YAML[/blue3]"
-        )
+        console.print("[blue3]> FOUND DEFAULT_REDIS_PATH FROM CONFIG.YAML[/blue3]")
         subprocess.Popen(
             ["redis-server"],
             stdout=subprocess.DEVNULL,
@@ -357,12 +340,8 @@ if not redis_running:
         )
         console.print("[blue3]> RUNNING REDIS FROM DEFAULT_REDIS_PATH[/blue3]")
 else:
-    console.print(
-        f"[blue3]Redis Port:[/blue3] [purple]redis://localhost:6379[/purple]"
-    )
-    console.print(
-        f"[blue3]Redis Process:[/blue3] [purple]redis-server.exe[/purple]"
-    )
+    console.print(f"[blue3]Redis Port:[/blue3] [purple]redis://localhost:6379[/purple]")
+    console.print(f"[blue3]Redis Process:[/blue3] [purple]redis-server.exe[/purple]")
 
 console.print(
     "[blue3]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[/blue3]"
@@ -412,12 +391,8 @@ if not os.path.exists("poetry.lock"):
     console.print(f"[blue3]> INSTALLED POETRY PACKAGES.[/blue3]\n")
     time.sleep(2)
 else:
-    console.print(
-        f"[blue3]> Poetry Lock File: [purple]poetry.lock[purple][/blue3]"
-    )
-    console.print(
-        f"[blue3]> Poetry Toml File: [purple]pyproject.toml[purple][/blue3]"
-    )
+    console.print(f"[blue3]> Poetry Lock File: [purple]poetry.lock[purple][/blue3]")
+    console.print(f"[blue3]> Poetry Toml File: [purple]pyproject.toml[purple][/blue3]")
 
 console.print(
     "[blue3]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[/blue3]"
@@ -454,9 +429,7 @@ if not os.path.exists("aerich.ini"):
     cd_path = "scripts/win32" if terminal == "CMD/Powershell" else "linux"
 
     build_database_command = (
-        "build_database"
-        if terminal == "CMD/Powershell"
-        else "./build_database.sh"
+        "build_database" if terminal == "CMD/Powershell" else "./build_database.sh"
     )
 
     subprocess.call(
