@@ -21,7 +21,7 @@ import aiohttp
 import discord
 import humanize
 import psutil
-from discord.ext import commands
+from discord.ext import commands, pages
 from discord.ext.commands import Bot, BucketType
 from sympy.core.symbol import var
 from sympy.parsing.sympy_parser import (
@@ -126,7 +126,7 @@ class Miscellaneous(
         )
 
         pEmbed.set_thumbnail(url=Links.BOT_AVATAR_URL)
-        pEmbed.set_footer(text=Mai.DEVELOPER_FOOTER, icon_url=Links.BOT_AVATAR_URL)
+        pEmbed.set_footer(text=MAI.DEVELOPER_FOOTER, icon_url=Links.BOT_AVATAR_URL)
         await message.edit(content=None, embed=pEmbed)
         await message.add_reaction(Emoji.WHITE_CHECKMARK)
 
@@ -177,10 +177,10 @@ class Miscellaneous(
 
         embed.set_thumbnail(url=Links.BOT_AVATAR_URL)
 
-        ghoul = ctx.guild.get_member(Mai.GHOUL_DISCORD_ID)
-        nerd = ctx.guild.get_member(Mai.NERD_DISCORD_ID)
+        ghoul = ctx.guild.get_member(MAI.GHOUL_DISCORD_ID)
+        nerd = ctx.guild.get_member(MAI.NERD_DISCORD_ID)
 
-        if ctx.guild.id == Mai.SUPPORT_SERVER_ID:
+        if ctx.guild.id == MAI.SUPPORT_SERVER_ID:
             developers = f"Developers: {ghoul.mention}, {nerd.mention}"
         else:
             developers = f"Developers: `ghoul#0002`, `Nerd#4271`"
@@ -246,7 +246,7 @@ class Miscellaneous(
             inline=False,
         )
 
-        embed.set_footer(text=Mai.DEVELOPER_FOOTER, icon_url=ctx.author.avatar.url)
+        embed.set_footer(text=MAI.DEVELOPER_FOOTER, icon_url=ctx.author.avatar.url)
 
         await message.edit(content=None, embed=embed)
 
@@ -464,6 +464,28 @@ class Miscellaneous(
                     embed.set_image(url=url)
                     await ctx.send(embed=embed)
 
+
+    @commands.slash_command(name="cogs", description="List All Loaded Cogs", guild_ids=[MAI.SUPPORT_SERVER_ID])
+    @commands.is_owner()
+    async def cogs(self, ctx: discord.ApplicationContext) -> None:
+        _pages = []
+        
+        cogs = self.bot.cogs
+        for cog_name, cog_object in cogs.items():
+            if cog_name == "Jishaku":
+                cog_object.emoji = Emoji.PYCORD
+            
+            cog_emoji = cog_object.emoji if cog_object.emoji is not None else ""
+            page = discord.Embed(title=f"{cog_emoji} {cog_object.qualified_name}", color=Colors.DEFAULT, description=f"{Emoji.WHITE_CHECKMARK} **{cog_object.description}**")
+            page.set_footer(text=MAI.DEVELOPER_FOOTER, icon_url=Links.BOT_AVATAR_URL)
+            page.set_author(name=ctx.author, icon_url=ctx.author.avatar.url)
+            page.set_thumbnail(url=ctx.author.avatar.url)
+            page.set_image(url=MAI.DEVELOPER_IMAGE)
+            _pages.append(page)
+            
+        paginator = pages.Paginator(pages=_pages, loop_pages=True, use_default_buttons=True, timeout=60)
+        
+        await paginator.respond(ctx.interaction, ephemeral=False)
 
 def setup(bot):
     bot.add_cog(Miscellaneous(bot))

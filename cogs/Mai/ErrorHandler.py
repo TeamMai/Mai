@@ -18,10 +18,11 @@ import humanize
 from discord.ext import commands
 from discord.ext.commands import Bot, BucketType
 
+from helpers.custommeta import CustomCog as Cog
 from helpers.constants import *
 
 
-class ErrorHandler(commands.Cog, command_attrs=dict(hidden=True)):
+class ErrorHandler(Cog, command_attrs=dict(hidden=True), emoji=Emoji.PYCORD):
     def __init__(self, bot: Bot) -> None:
         self.bot: Bot = bot
 

@@ -24,7 +24,7 @@ from helpers.custommeta import CustomCog as Cog
 from helpers.logging import log
 
 
-class Developer(Cog, command_attrs=dict(hidden=True), emoji=Emoji.DISCORD_EMPLOYEE):
+class Developer(Cog, description="Developer Commands For Mai", command_attrs=dict(hidden=True), emoji=Emoji.DISCORD_EMPLOYEE):
     def __init__(self, bot: Bot):
         self.bot: Bot = bot
         self.blacklist_channel_id = config["SERVER_BLACKLIST_CHANNEL_ID"]

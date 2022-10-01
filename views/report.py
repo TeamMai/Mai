@@ -57,9 +57,9 @@ class UserModal(discord.ui.Modal):
             value=self.children[2].value,
             inline=False,
         )
-        channel = interaction.client.get_channel(Mai.REPORT_CHANNEL_ID)
+        channel = interaction.client.get_channel(MAI.REPORT_CHANNEL_ID)
         await channel.send(
-            content=f"<@&{Mai.STAFF_ROLE_ID}> **New Report Received!**",
+            content=f"<@&{MAI.STAFF_ROLE_ID}> **New Report Received!**",
             embeds=[embed],
         )
 
@@ -122,9 +122,9 @@ class GuildModal(discord.ui.Modal):
             value=self.children[2].value,
             inline=False,
         )
-        channel = interaction.client.get_channel(Mai.REPORT_CHANNEL_ID)
+        channel = interaction.client.get_channel(MAI.REPORT_CHANNEL_ID)
         await channel.send(
-            content=f"<@&{Mai.STAFF_ROLE_ID}> **New Report Received!**",
+            content=f"<@&{MAI.STAFF_ROLE_ID}> **New Report Received!**",
             embeds=[embed],
         )
 
@@ -204,9 +204,9 @@ class BugModal(discord.ui.Modal):
             value=self.children[3].value,
             inline=False,
         )
-        channel = interaction.client.get_channel(Mai.REPORT_CHANNEL_ID)
+        channel = interaction.client.get_channel(MAI.REPORT_CHANNEL_ID)
         await channel.send(
-            content=f"<@&{Mai.DEVELOPER_ROLE_ID}> **New Report Received!**",
+            content=f"<@&{MAI.DEVELOPER_ROLE_ID}> **New Report Received!**",
             embeds=[embed],
         )
 

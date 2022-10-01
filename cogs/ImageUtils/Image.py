@@ -19,6 +19,7 @@ import discord
 from asyncdagpi import Client as DagpiClient
 from asyncdagpi import ImageFeatures
 from discord.ext import commands
+from discord.ext.commands import Bot, BucketType
 
 from config.ext.parser import config
 from helpers.constants import *

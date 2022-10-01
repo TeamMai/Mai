@@ -22,8 +22,10 @@ from db.models import Guild, GuildEvent, ServerLogging
 from helpers.constants import *
 from helpers.logging import log
 
+from helpers.custommeta import CustomCog as Cog
 
-class Events(commands.Cog, command_attrs=dict(hidden=True)):
+
+class Events(Cog, command_attrs=dict(hidden=True), emoji=Emoji.PYCORD):
     def __init__(self, bot: Bot) -> None:
         self.bot: Bot = bot
 

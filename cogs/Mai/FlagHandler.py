@@ -23,8 +23,9 @@ from helpers.constants import *
 from helpers.logging import log
 from helpers.types import *
 
+from helpers.custommeta import CustomCog as Cog
 
-class FlagHandler(commands.Cog, command_attrs=dict(hidden=True)):
+class FlagHandler(Cog, command_attrs=dict(hidden=True), emoji=Emoji.PYCORD):
     def __init__(self, bot: Bot) -> None:
         self.bot: Bot = bot
         self.spam_control: CooldownMapping = commands.CooldownMapping.from_cooldown(

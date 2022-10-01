@@ -258,7 +258,7 @@ class Limitations:
 
 
 @final
-class Mai:
+class MAI:
     SUPPORT_SERVER_ID: Final[int] = 889542746027741194
     GHOUL_DISCORD_ID: Final[int] = 433026067050266634
     NERD_DISCORD_ID: Final[int] = 186202944461471745
@@ -279,3 +279,4 @@ class Mai:
     DEVELOPER_ROLE_ID: Final[int] = 889542746027741203
 
     DEVELOPER_FOOTER: Final[str] = "Made With ❤️ By Ghoul & Nerd"
+    DEVELOPER_IMAGE: Final[str] = "https://cdn.discordapp.com/attachments/890304279737405510/896925340931334174/bd_wallpaper_2.gif"

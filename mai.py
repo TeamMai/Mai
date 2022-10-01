@@ -331,7 +331,6 @@ bot: Mai = Mai(development_mode="development")
 
 # -- Base Events
 
-
 @bot.event
 async def on_guild_join(guild: discord.Guild) -> None:
     try:
@@ -378,10 +377,6 @@ async def is_guild_blacklisted(ctx: commands.Context) -> bool:
         return False
     else:
         return True
-
-
-# -- COG RELATED COMMANDS
-
 
 @bot.command(aliases=["where", "find"])
 @commands.is_owner()
@@ -546,34 +541,6 @@ async def unload_error(ctx: commands.Context, error: commands.CommandError) -> N
     else:
         traceback.print_exception(type(error), error, error.__traceback__)
 
-
-@bot.command()
-@commands.is_owner()
-async def cogs(ctx: commands.Context) -> None:
-    cogs = []
-
-    for cog in bot.cogs:
-        cogs.append(f"`{cog}`")
-
-    cogs_str = ", ".join(cogs)
-    embed: Embed = discord.Embed(
-        title=f"All Cogs", description=cogs_str, colour=Colors.DEFAULT
-    )
-    await ctx.send(embed=embed)
-
-
-@cogs.error
-async def cogs_error(ctx: commands.Context, error: commands.CommandError) -> None:
-    if isinstance(error, commands.NotOwner):
-        embed: Embed = discord.Embed(
-            color=Colors.ERROR,
-            description=f"{Emoji.ERROR} This Can Only Be Used By The Bot's Owners.",
-        )
-        await ctx.send(embed=embed)
-    else:
-        traceback.print_exception(type(error), error, error.__traceback__)
-
-
 @bot.command()
 @commands.is_owner()
 async def reload(ctx: commands.Context, *, extension: str) -> None:
@@ -616,3 +583,4 @@ if __name__ == "__main__":
         install(show_locals=True)
     except (KeyboardInterrupt):
         log.error("[red]Bot Start Interrupted By User.[/red]")
+        os._exit(1)

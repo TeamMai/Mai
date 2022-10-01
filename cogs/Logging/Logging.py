@@ -18,8 +18,7 @@ import discord
 import humanize
 from discord import AuditLogAction, AuditLogEntry
 from discord.ext import commands
-from discord.ext.commands import BucketType, Greedy
-from discord.ext.tasks import T
+from discord.ext.commands import BucketType, Greedy, Bot
 from tortoise.exceptions import DoesNotExist, IntegrityError
 
 from db.models import Guild, ServerLogging
@@ -33,7 +32,7 @@ class Logging(
     Cog, name="Logging", description="Manage Server Logging", emoji=":pencil:"
 ):
     def __init__(self, bot: Bot):
-        self.bot = bot
+        self.bot: Bot = bot
 
     @commands.Cog.listener()
     async def on_ready(self):

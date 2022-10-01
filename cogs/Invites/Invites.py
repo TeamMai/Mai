@@ -17,7 +17,7 @@ from typing import Optional, Union
 import discord
 import PycordUtils
 from discord.ext import commands
-from discord.ext.commands import BucketType
+from discord.ext.commands import BucketType, Bot
 from tortoise.expressions import F
 
 from db.models import Guild, Invite
@@ -33,7 +33,7 @@ class Invites(
     emoji=Emoji.LINK,
 ):
     def __init__(self, bot: Bot):
-        self.bot = bot
+        self.bot: Bot = bot
         self.tracker = PycordUtils.InviteTracker(bot)
 
     @commands.Cog.listener()
