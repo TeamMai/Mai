@@ -22,7 +22,7 @@ nudepy==0.5.1
 numpy==1.23.2; python_version >= "3.7"
 ossapi==2.3.0
 osu-tools==0.2.13; python_version >= "3"
-pillow==9.2.0; python_version >= "3.6"
+pillow==9.4.0; python_version >= "3.6"
 pre-commit==2.20.0; python_full_version >= "3.6.1"
 psutil==5.9.1; (python_version >= "2.6" and python_full_version < "3.0.0") or (python_full_version >= "3.4.0")
 py-cord @ git+https://github.com/Pycord-Development/pycord.git@master ; python_full_version >= "3.8.0"
