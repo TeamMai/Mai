@@ -43,7 +43,7 @@ tiktokapi==5.2.2
 topggpy @ git+https://github.com/top-gg/python-sdk/@master ; python_version >= "3.6"
 tortoise-orm @ git+https://github.com/tortoise/tortoise-orm/@develop; python_version >= "3.7" and python_version < "4.0"
 urllib3==1.26.12; python_version >= "3.7" and python_full_version < "3.0.0" and python_version < "4.0" or python_full_version >= "3.6.0" and python_version < "4" and python_version >= "3.7"
-virtualenv==20.16.4; python_full_version >= "3.6.1"
+virtualenv==20.24.2; python_full_version >= "3.6.1"
 watchgod==0.8.2; python_version >= "3.5"
 websockets==10.3; python_version >= "3.7"
 yarl==1.8.1; python_version >= "3.6"
