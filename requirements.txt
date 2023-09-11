@@ -13,7 +13,7 @@ download==0.3.5
 fuzzywuzzy==0.18.0
 genshinstats==1.4.11.3; python_version >= "3.7"
 halo==0.0.31; python_version >= "3.4"
-humanize==4.3.0; python_version >= "3.6"
+humanize==4.8.0; python_version >= "3.6"
 inquirerpy==0.3.4; python_version >= "3.7" and python_version < "4.0"
 jeyyapi @ git+https://github.com/JeyyGit/jeyyapi.git@main
 jishaku @ git+https://github.com/Gorialis/jishaku@master ; python_full_version >= "3.8.0"
