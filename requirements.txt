@@ -39,7 +39,7 @@ rich==12.5.1; python_full_version >= "3.6.2" and python_full_version < "4.0.0"
 roblox==2.0.0; python_version >= "3.7"
 statcord.py==3.1.0; python_version >= "3.5"
 sympy==1.11.1; python_version >= "3.6"
-tiktokapi==5.2.2
+tiktokapi==6.2.0
 topggpy @ git+https://github.com/top-gg/python-sdk/@master ; python_version >= "3.6"
 tortoise-orm @ git+https://github.com/tortoise/tortoise-orm/@develop; python_version >= "3.7" and python_version < "4.0"
 urllib3==1.26.12; python_version >= "3.7" and python_full_version < "3.0.0" and python_version < "4.0" or python_full_version >= "3.6.0" and python_version < "4" and python_version >= "3.7"
